@@ -1,4 +1,4 @@
-﻿namespace RetardCheck.Auth.Dto
+﻿namespace Timetable.Auth.Dto
 {
     public class LoginResponse
     {

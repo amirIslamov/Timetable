@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
 namespace Timetable.Auth.Model.DbContexts
 {
-    public class AuthDbContext: DbContext
+    public class AuthDbContext: IdentityDbContext<TimetableUser, TimetableRole, long>
     {
-        
     }
 }

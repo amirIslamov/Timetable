@@ -2,7 +2,7 @@
 
 namespace Timetable.Auth.Model
 {
-    public class TimetableUserRole: IdentityRole<long>
+    public class TimetableRole: IdentityRole<long>
     {
         
     }

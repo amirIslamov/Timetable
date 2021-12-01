@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using RetardCheck.Auth;
-using RetardCheck.Auth.Dto;
+using Timetable.Auth.Dto;
 
-namespace ITStepASP.Auth.Controllers
+namespace Timetable.Auth.Controllers
 {
     [ApiController]
     [Route("api/v1/auth")]

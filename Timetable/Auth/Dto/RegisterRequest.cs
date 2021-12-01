@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RetardCheck.Auth.Dto
+namespace Timetable.Auth.Dto
 {
     public class RegisterRequest
     {
