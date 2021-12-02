@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RetardCheck.Auth.Options;
 
-namespace Timetable.Auth
+namespace Timetable.Auth    
 {
     public class JwtService
     {

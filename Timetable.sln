@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetable", "Timetable\Timetable.csproj", "{88A16DD9-B110-4DED-88BE-62BECAAF4F74}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mailing", "Mailing\Mailing.csproj", "{7D1E4C94-C4BE-4FD7-AAE8-E53B7739719D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{88A16DD9-B110-4DED-88BE-62BECAAF4F74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88A16DD9-B110-4DED-88BE-62BECAAF4F74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88A16DD9-B110-4DED-88BE-62BECAAF4F74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D1E4C94-C4BE-4FD7-AAE8-E53B7739719D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D1E4C94-C4BE-4FD7-AAE8-E53B7739719D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D1E4C94-C4BE-4FD7-AAE8-E53B7739719D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D1E4C94-C4BE-4FD7-AAE8-E53B7739719D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
