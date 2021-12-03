@@ -2,27 +2,36 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Model.Dal;
+using Model.Dal.Identity;
+using Model.Dal.Repositories;
 using RetardCheck.Auth.Options;
 using Timetable.Auth;
+using Timetable.Auth.Authorization.Identity;
 using Timetable.Auth.Model;
-using Timetable.Auth.Model.DbContexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<AuthDbContext>(o =>
+builder.Services.AddDbContext<TimetableDbContext>(o =>
 {
-
+    o.UseSqlite(builder.Configuration.GetConnectionString("timetableDb"));
 });
+builder.Services.AddScoped<TimetableUserStore>();
+builder.Services.AddScoped<UsersRepository>();
+builder.Services.AddScoped<StudentsRepository>();
+builder.Services.AddScoped<TeachersRepository>();
+builder.Services.AddScoped<GroupsRepository>();
 
 builder.Services.AddIdentityCore<TimetableUser>()
-    .AddEntityFrameworkStores<AuthDbContext>()
-    .AddRoles<TimetableRole>()
+    .AddUserStore<TimetableUserStore>()
+    .AddClaimsPrincipalFactory<TimetableUserClaimsPrincipalFactory>()
     .AddDefaultTokenProviders();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.Jwt));
@@ -46,12 +55,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddCors(
-    options => options.AddPolicy("devCors", opts => opts
-        .AllowAnyOrigin()
-        .AllowAnyHeader()
-        .AllowAnyMethod()));
-
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddCors(
+        options => options.AddPolicy("devCors", opts => opts
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod()));    
+}
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

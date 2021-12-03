@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Timetable.Auth.Dto;
+using Timetable.Auth.Dto.Auth;
+using Timetable.Auth.Dto.Profile;
+using Timetable.Auth.Model;
 
 namespace Timetable.Auth.Controllers
 {
@@ -9,20 +12,20 @@ namespace Timetable.Auth.Controllers
     [Route("api/v1/auth")]
     public class LoginController : ControllerBase
     {
-        private UserManager<IdentityUser> _userManager;
+        private UserManager<TimetableUser> _userManager;
         private JwtService _jwtService;
-        private UserClaimsPrincipalFactory<IdentityUser> _principalFactory;
+        private IUserClaimsPrincipalFactory<TimetableUser> _principalFactory;
 
         public LoginController(
-            UserManager<IdentityUser> userManager,
+            UserManager<TimetableUser> userManager,
             JwtService jwtService,
-            UserClaimsPrincipalFactory<IdentityUser> principalFactory)
+            IUserClaimsPrincipalFactory<TimetableUser> principalFactory)
             => (_userManager, _jwtService, _principalFactory) = (userManager, jwtService, principalFactory);
 
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
         {
-            var user = new IdentityUser(request.UserName);
+            var user = await _userManager.FindByEmailAsync(request.Email);
 
             if (!await _userManager.CheckPasswordAsync(user, request.Password))
             {
@@ -42,10 +45,12 @@ namespace Timetable.Auth.Controllers
         public async Task<IActionResult> Register(RegisterRequest request)
         {
             var result = await _userManager.CreateAsync(
-                new IdentityUser()
+                new TimetableUser()
                 {
-                    UserName = request.UserName,
-                    Email = request.Email
+                    Email = request.Email,
+                    FullName = request.FullName,
+                    Address = request.Address,
+                    PhoneNumber = request.PhoneNumber
                 },
                 request.Password
             );
@@ -56,6 +61,18 @@ namespace Timetable.Auth.Controllers
             }
 
             return Ok();
+        }
+        
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> RequestPasswordReset(RequestPasswordResetRequest request)
+        {
+            throw new NotImplementedException();
+        }
+        
+        [HttpPost("password-reset")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            throw new NotImplementedException();
         }
     }
 }

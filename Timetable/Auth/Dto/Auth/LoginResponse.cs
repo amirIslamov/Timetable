@@ -1,4 +1,4 @@
-﻿namespace Timetable.Auth.Dto
+﻿namespace Timetable.Auth.Dto.Auth
 {
     public class LoginResponse
     {

@@ -1,16 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Timetable.Auth.Dto
+namespace Timetable.Auth.Dto.Auth
 {
     public class LoginRequest
     {
         [Required]
-        [StringLength(4)]
-        [MaxLength(16)]
-        public string UserName { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
 
-        [StringLength(8)]
-        [MaxLength(16)]
+        [StringLength(16, MinimumLength = 8)]
         [Required]
         public string Password { get; set; }
     }
