@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Timetable.Auth.Model;
+using Model.Profile;
 
 namespace Model.Dal.Identity
 {

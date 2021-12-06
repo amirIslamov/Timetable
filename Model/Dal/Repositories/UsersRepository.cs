@@ -1,5 +1,5 @@
-﻿using Repositories.EntityFramework;
-using Timetable.Auth.Model;
+﻿using Model.Profile;
+using Repositories.EntityFramework;
 
 namespace Model.Dal.Repositories
 {

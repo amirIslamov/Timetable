@@ -10,7 +10,7 @@ namespace Timetable.Timetable.Model
         public int ClassNum { get; set; }
         
         public long ClassGroupId { get; set; }
-        public ClassGroup ClassGroup { get; set; }
+        public TeacherLoad TeacherLoad { get; set; }
     }
     
     public enum WeekType

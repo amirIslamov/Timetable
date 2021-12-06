@@ -1,4 +1,4 @@
-﻿namespace Timetable.Timetable.Model
+﻿namespace Model.Timetable
 {
     public class Grade
     {

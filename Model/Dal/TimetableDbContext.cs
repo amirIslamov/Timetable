@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Model.Profile;
 using Model.Profile.Roles;
 using Model.Timetable;
-using Timetable.Auth.Model;
 using Timetable.Timetable.Model;
 
 namespace Model.Dal
@@ -21,7 +21,7 @@ namespace Model.Dal
         
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Discipline> Disciplines { get; set; }
-        public DbSet<ClassGroup> ClassGroups { get; set; }
+        public DbSet<TeacherLoad> ClassGroups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
@@ -77,7 +77,7 @@ namespace Model.Dal
                     .HasForeignKey<Teacher>(s => s.Id)
                     .IsRequired();
 
-                e.HasMany<ClassGroup>(t => t.ClassGroups)
+                e.HasMany<TeacherLoad>(t => t.ClassGroups)
                     .WithOne(c => c.Teacher)
                     .IsRequired();
             });
@@ -87,7 +87,7 @@ namespace Model.Dal
                     .WithOne(s => s.Group)
                     .IsRequired();
 
-                e.HasMany<ClassGroup>(group => group.ClassGroups)
+                e.HasMany<TeacherLoad>(group => group.ClassGroups)
                     .WithOne(cg => cg.Group)
                     .IsRequired();
             });
@@ -101,7 +101,7 @@ namespace Model.Dal
                     .WithMany()
                     .IsRequired();
             });
-            mb.Entity<ClassGroup>(e =>
+            mb.Entity<TeacherLoad>(e =>
             {
                 e.HasOne<Discipline>()
                     .WithMany();

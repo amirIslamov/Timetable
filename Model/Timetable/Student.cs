@@ -1,4 +1,4 @@
-﻿using Timetable.Auth.Model;
+﻿using Model.Profile;
 using Timetable.Timetable.Model;
 
 namespace Model.Timetable

@@ -1,4 +1,5 @@
-﻿using Repositories.EntityFramework;
+﻿using Model.Timetable;
+using Repositories.EntityFramework;
 using Timetable.Timetable.Model;
 
 namespace Model.Dal.Repositories

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Timetable.Auth.Model;
+using Model.Profile;
 
 namespace Timetable.Timetable.Model
 {
@@ -10,6 +10,6 @@ namespace Timetable.Timetable.Model
         public string Chair { get; set; }
         public TimetableUser User { get; set; }
 
-        public List<ClassGroup> ClassGroups { get; set; }
+        public List<TeacherLoad> ClassGroups { get; set; }
     }
 }

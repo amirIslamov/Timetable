@@ -14,6 +14,6 @@ namespace Timetable.Timetable.Model
         public Teacher Curator { get; set; }
         
         public List<Student> Students { get; set; }
-        public List<ClassGroup> ClassGroups { get; set; }
+        public List<TeacherLoad> ClassGroups { get; set; }
     }
 }

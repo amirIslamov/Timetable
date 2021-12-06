@@ -1,6 +1,6 @@
 ﻿using Model.Profile.Roles;
 
-namespace Timetable.Auth.Model
+namespace Model.Profile
 {
     public class TimetableUser
     {

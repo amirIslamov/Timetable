@@ -1,4 +1,6 @@
-﻿namespace Timetable.Timetable.Model
+﻿using Timetable.Timetable.Model;
+
+namespace Model.Timetable
 {
     public class Discipline
     {
