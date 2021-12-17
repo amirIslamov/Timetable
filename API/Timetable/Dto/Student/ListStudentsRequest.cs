@@ -1,8 +1,7 @@
-﻿namespace API.Timetable.Dto.Student
+﻿namespace API.Timetable.Dto.Student;
+
+public class ListStudentsRequest
 {
-    public class ListStudentsRequest
-    {
-        public int PageNum { get; set; }
-        public int PageSize { get; set; }
-    }
+    public int PageNum { get; set; }
+    public int PageSize { get; set; }
 }

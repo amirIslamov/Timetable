@@ -1,36 +1,35 @@
-﻿using System.Threading.Tasks;
-using Mailing.Abstractions;
+﻿using Mailing.Abstractions;
 using Mailing.SendGrid.Options;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
-namespace Mailing.SendGrid
+namespace Mailing.SendGrid;
+
+public class SendGridEmailSender : IEmailSender
 {
-    public class SendGridEmailSender: IEmailSender
+    protected SendGridClient _client;
+
+    public SendGridEmailSender(IOptions<SendGridOptions> options)
     {
-        public SendGridOptions Options { get; set; }
-        protected SendGridClient _client;
+        Options = options.Value;
+        _client = new SendGridClient(Options.SendGridApiKey);
+    }
 
-        public SendGridEmailSender(IOptions<SendGridOptions> options)
+    public SendGridOptions Options { get; set; }
+
+    public Task SendEmail(string email, string subject, string message)
+    {
+        var msg = new SendGridMessage
         {
-            Options = options.Value;
-            _client = new SendGridClient(Options.SendGridApiKey);
-        }
+            From = new EmailAddress(Options.FromEmail),
+            Subject = subject,
+            PlainTextContent = message,
+            HtmlContent = message
+        };
+        msg.AddTo(new EmailAddress(email));
+        msg.SetClickTracking(false, false);
 
-        public Task SendEmail(string email, string subject, string message)
-        {
-            var msg = new SendGridMessage()
-            {
-                From = new EmailAddress(Options.FromEmail),
-                Subject = subject,
-                PlainTextContent = message,
-                HtmlContent = message
-            };
-            msg.AddTo(new EmailAddress(email));
-            msg.SetClickTracking(false, false);
-
-            return _client.SendEmailAsync(msg);
-        }
+        return _client.SendEmailAsync(msg);
     }
 }

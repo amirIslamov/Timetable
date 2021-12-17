@@ -1,107 +1,107 @@
-using System.Linq;
-using System.Threading.Tasks;
-using API.Timetable.Dto;
 using API.Timetable.Dto.Group;
+using Arch.EntityFrameworkCore.UnitOfWork;
+using Arch.EntityFrameworkCore.UnitOfWork.Collections;
+using FilteringOrderingPagination;
+using FilteringOrderingPagination.Models;
 using Microsoft.AspNetCore.Mvc;
-using Model.Dal.Repositories;
-using Repositories.Util;
-using Timetable.Timetable.Model;
+using Model.Dal;
+using Model.Entities;
+using Model.Validation.Abstractions;
 
-namespace API.Timetable.Controllers
+namespace API.Timetable.Controllers;
+
+[Route("api/v1/groups")]
+[ApiController]
+public class GroupsController : ControllerBase
 {
-    [Route("api/v1/groups")]
-    [ApiController]
-    public class GroupsController : ControllerBase
+    private readonly IValidator<Group> _groupValidator;
+    private readonly UnitOfWork<TimetableDbContext> _unitOfWork;
+
+    public GroupsController(UnitOfWork<TimetableDbContext> unitOfWork, IValidator<Group> groupValidator)
     {
-        protected GroupsRepository _groupsRepository;
-        protected TeachersRepository _teachersRepository;
+        _unitOfWork = unitOfWork;
+        _groupValidator = groupValidator;
+    }
 
-        public GroupsController(GroupsRepository groupsRepository, TeachersRepository teachersRepository)
+    [HttpGet]
+    public async Task<ActionResult<IPagedList<ListGroupsResponse>>> GetGroups(FopRequest<Group, GroupFilter> request)
+    {
+        var pagedGroups = await _unitOfWork
+            .GetRepository<Group>()
+            .GetPagedListAsync(
+                s => ListGroupsResponse.FromGroup(s),
+                request);
+
+        return Ok(pagedGroups);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<GetGroupResponse>> GetGroup(long id)
+    {
+        var group = await _unitOfWork
+            .GetRepository<Group>()
+            .FindAsync(new {Id = id});
+
+        if (group == null) return NotFound();
+
+        return GetGroupResponse.FromGroup(group);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateGroup(CreateGroupRequest request)
+    {
+        var group = new Group
         {
-            _groupsRepository = groupsRepository;
-            _teachersRepository = teachersRepository;
-        }
+            Name = request.Name,
+            ShortName = request.ShortName,
+            AdmissionYear = request.AdmissionYear
+        };
 
-        [HttpGet]
-        public async Task<ActionResult<ListGroupsResponse>> GetGroups([FromQuery] ListGroupsRequest request)
+        var validationResult = await _groupValidator.ValidateAsync(group);
+
+        if (validationResult.Succeeded)
         {
-            var paging = new Paging(request.PageNum, request.PageSize);
-            var groups = _groupsRepository.Paginate(paging).ToList();
+            await _unitOfWork
+                .GetRepository<Group>()
+                .InsertAsync(group);
 
-            return ListGroupsResponse.FromGroupsAndPaging(groups, paging);
-        }
-        
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GetGroupResponse>> GetGroup(long id)
-        {
-            var group = await _groupsRepository.FindAsync(id);
+            await _unitOfWork.SaveChangesAsync();
 
-            if (group == null)
-            {
-                return NotFound();
-            }
-
-            return GetGroupResponse.FromGroup(group);
-        }
-        
-        [HttpPost]
-        public async Task<IActionResult> CreateGroup(CreateGroupRequest request)
-        {
-            var group = new Group()
-            {
-                Name = request.Name,
-                ShortName = request.ShortName,
-                AdmissionYear = request.AdmissionYear
-            };
-            
-            var curator = await _teachersRepository.FindAsync(request.CuratorId);
-
-            if (curator == null)
-            {
-                return BadRequest();
-            }
-
-            group.Curator = curator;
-            
-            _groupsRepository.Insert(group);
-            await _groupsRepository.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetGroup), 
+            return CreatedAtAction(
+                nameof(GetGroup),
                 new {id = group.Id},
                 GetGroupResponse.FromGroup(group));
         }
-        
-        [HttpPut("{id}")]
-        public async Task<ActionResult<GetGroupResponse>> UpdateGroup(UpdateGroupRequest request, long id)
+
+        return BadRequest(validationResult.Failure);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<GetGroupResponse>> UpdateGroup(UpdateGroupRequest request, long id)
+    {
+        var group = await _unitOfWork
+            .GetRepository<Group>()
+            .FindAsync(new {Id = id});
+
+        if (group == null) return NotFound();
+
+        group.Name = request.Name;
+        group.ShortName = request.ShortName;
+        group.AdmissionYear = request.AdmissionYear;
+
+        var validationResult = await _groupValidator.ValidateAsync(group);
+
+        if (validationResult.Succeeded)
         {
-            var group = await _groupsRepository.FindAsync(id);
+            _unitOfWork
+                .GetRepository<Group>()
+                .Update(group);
 
-            if (group == null)
-            {
-                return NotFound();
-            }
+            await _unitOfWork.SaveChangesAsync();
 
-            group.Name  = request.Name;
-            group.ShortName = request.ShortName;
-            group.AdmissionYear = request.AdmissionYear;
-
-            if (request.CuratorId != group.CuratorId)
-            {
-                var curator = await _teachersRepository.FindAsync(request.CuratorId);
-
-                if (curator == null)
-                {
-                    return BadRequest();
-                }
-
-                group.Curator = curator;
-                group.CuratorId = curator.Id;
-            }
-            
-            _groupsRepository.Update(group);
-            await _groupsRepository.SaveChangesAsync();
-
-            return GetGroupResponse.FromGroup(group);
+            return Ok(GetGroupResponse.FromGroup(group));
         }
+
+        return BadRequest(validationResult.Failure);
     }
 }

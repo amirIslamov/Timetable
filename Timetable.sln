@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mailing", "Mailing\Mailing.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{3DBF5146-57CE-4F3C-8721-083D75EE028C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repositories", "Repositories\Repositories.csproj", "{2B68F0FC-36F8-4636-8C61-3528C978B142}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilteringOrderingPagination", "FilteringOrderingPagination\FilteringOrderingPagination.csproj", "{A6EF354E-9B3F-4A68-9E3C-E6B3F0A0D13D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,9 +26,9 @@ Global
 		{3DBF5146-57CE-4F3C-8721-083D75EE028C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DBF5146-57CE-4F3C-8721-083D75EE028C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DBF5146-57CE-4F3C-8721-083D75EE028C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2B68F0FC-36F8-4636-8C61-3528C978B142}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B68F0FC-36F8-4636-8C61-3528C978B142}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B68F0FC-36F8-4636-8C61-3528C978B142}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B68F0FC-36F8-4636-8C61-3528C978B142}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6EF354E-9B3F-4A68-9E3C-E6B3F0A0D13D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6EF354E-9B3F-4A68-9E3C-E6B3F0A0D13D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6EF354E-9B3F-4A68-9E3C-E6B3F0A0D13D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6EF354E-9B3F-4A68-9E3C-E6B3F0A0D13D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

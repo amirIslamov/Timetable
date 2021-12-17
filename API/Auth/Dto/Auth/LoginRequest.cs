@@ -1,15 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace API.Auth.Dto.Auth;
 
-namespace API.Auth.Dto.Auth
+public class LoginRequest
 {
-    public class LoginRequest
-    {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [StringLength(16, MinimumLength = 8)]
-        [Required]
-        public string Password { get; set; }
-    }
+    public string Email { get; set; }
+    public string Password { get; set; }
 }

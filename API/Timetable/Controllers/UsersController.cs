@@ -1,87 +1,76 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using API.Timetable.Dto.User;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Arch.EntityFrameworkCore.UnitOfWork;
+using Arch.EntityFrameworkCore.UnitOfWork.Collections;
+using FilteringOrderingPagination;
+using FilteringOrderingPagination.Models;
 using Microsoft.AspNetCore.Mvc;
-using Model.Dal.Identity;
-using Model.Dal.Repositories;
-using Repositories.Util;
-using API.Auth.Dto.Profile;
+using Model.Auth;
+using Model.Dal;
+using Model.Entities;
 
-namespace API.Timetable.Controllers
+namespace API.Timetable.Controllers;
+
+[Route("api/v1/users")]
+[ApiController]
+public class UsersController : ControllerBase
 {
-    [Route("api/v1/users")]
-    [ApiController]
-    public class UsersController : ControllerBase
+    private readonly IUnitOfWork<TimetableDbContext> _unitOfWork;
+    private readonly TimetableUserManager _userManager;
+
+    public UsersController(TimetableUserManager userManager, IUnitOfWork<TimetableDbContext> unitOfWork)
     {
-        protected UsersRepository _usersRepository;
+        _userManager = userManager;
+        _unitOfWork = unitOfWork;
+    }
 
-        public UsersController(UsersRepository usersRepository)
-        {
-            _usersRepository = usersRepository;
-        }
+    [HttpGet]
+    public async Task<ActionResult<IPagedList<ListUsersResponse>>> GetUsers(
+        FopRequest<TimetableUser, UserFilter> request)
+    {
+        var pagedUsers = await _unitOfWork
+            .GetRepository<TimetableUser>()
+            .GetPagedListAsync(
+                u => ListUsersResponse.FromUser(u),
+                request);
 
-        [HttpGet]
-        public async Task<ActionResult<ListUsersResponse>> GetUsers([FromQuery] GetUsersRequest request)
-        {
-            var paging = new Paging(request.PageNum, request.PageSize);
-            var users = _usersRepository
-                .Paginate(paging)
-                .ToList();
+        return Ok(pagedUsers);
+    }
 
-            return ListUsersResponse.FromUsersAndPaging(users, paging);
-        }
-        
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GetProfileResponse>> GetUser(long id)
-        {
-            var user = _usersRepository.Find(id);
+    [HttpGet("{id}")]
+    public async Task<ActionResult<GetProfileResponse>> GetUser(long id)
+    {
+        var user = await _userManager.FindAsync(id);
 
-            if (user != null)
-            {
-                return GetProfileResponse.FromUser(user);
-            }
+        if (user != null) return GetProfileResponse.FromUser(user);
 
-            return NotFound();
-        }
-        
-        [HttpGet("self")]
-        public async Task<ActionResult<GetProfileResponse>> GetSelf()
-        {
-            var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            
-            var user = _usersRepository.Find(userId);
+        return NotFound();
+    }
 
-            if (user != null)
-            {
-                return GetProfileResponse.FromUser(user);
-            }
+    [HttpGet("self")]
+    public async Task<ActionResult<GetProfileResponse>> GetSelf()
+    {
+        var user = await _userManager.GetUserAsync(HttpContext.User);
 
-            return NotFound();
-        }
-        
-        [HttpPut("{id}")]
-        public async Task<ActionResult<GetProfileResponse>> UpdateUser(UpdateProfileRequest request, long id)
-        {
-            var user = _usersRepository.Find(id);
+        if (user != null) return GetProfileResponse.FromUser(user);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+        return NotFound();
+    }
 
-            user.Address = request.Address;
-            user.PhoneNumber = request.PhoneNumber;
-            user.FullName = request.FullName;
-            
-            _usersRepository.Update(user);
-            await _usersRepository.SaveChangesAsync();
+    [HttpPut("{id}")]
+    public async Task<ActionResult<GetProfileResponse>> UpdateUser(UpdateProfileRequest request, long id)
+    {
+        var user = await _userManager.FindAsync(id);
 
-            return GetProfileResponse.FromUser(user);
-        }
+        if (user == null) return NotFound();
+
+        user.Address = request.Address;
+        user.PhoneNumber = request.PhoneNumber;
+        user.FullName = request.FullName;
+
+        await _userManager.UpdateAsync(user);
+
+        await _unitOfWork.SaveChangesAsync();
+
+        return GetProfileResponse.FromUser(user);
     }
 }

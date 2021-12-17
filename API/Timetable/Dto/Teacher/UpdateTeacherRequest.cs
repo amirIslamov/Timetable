@@ -1,7 +1,6 @@
-﻿namespace API.Timetable.Dto.Teacher
+﻿namespace API.Timetable.Dto.Teacher;
+
+public class UpdateTeacherRequest
 {
-    public class UpdateTeacherRequest
-    {
-        public string Chair { get; set; }
-    }
+    public string Chair { get; set; }
 }

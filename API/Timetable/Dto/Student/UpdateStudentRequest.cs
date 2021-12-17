@@ -1,12 +1,11 @@
-﻿using Model.Timetable;
+﻿using Model.Entities;
 
-namespace API.Timetable.Dto.Student
+namespace API.Timetable.Dto.Student;
+
+public class UpdateStudentRequest
 {
-    public class UpdateStudentRequest
-    {
-        public ParentContacts MotherContacts { get; set; }
-        public ParentContacts FatherContacts { get; set; }
-        
-        public long GroupId { get; set; }
-    }
+    public ParentContacts MotherContacts { get; set; }
+    public ParentContacts FatherContacts { get; set; }
+
+    public long GroupId { get; set; }
 }

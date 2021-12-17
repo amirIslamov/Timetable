@@ -1,78 +1,64 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using API.Auth.Authorization;
 using API.Auth.Dto.Auth;
-using API.Auth.Dto.Profile;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Model.Profile;
+using Model.Auth;
+using Model.Entities;
+using Model.Users;
 
-namespace API.Auth.Controllers
+namespace API.Auth.Controllers;
+
+[ApiController]
+[Route("api/v1/auth")]
+public class LoginController : ControllerBase
 {
-    [ApiController]
-    [Route("api/v1/auth")]
-    public class LoginController : ControllerBase
+    private readonly JwtService _jwtService;
+    private readonly PasswordManager _passwordManager;
+    private readonly IUserClaimsPrincipalFactory _principalFactory;
+    private readonly TimetableUserManager _userManager;
+
+    public LoginController(JwtService jwtService, TimetableUserManager userManager, PasswordManager passwordManager,
+        IUserClaimsPrincipalFactory principalFactory)
     {
-        private UserManager<TimetableUser> _userManager;
-        private JwtService _jwtService;
-        private IUserClaimsPrincipalFactory<TimetableUser> _principalFactory;
+        _jwtService = jwtService;
+        _userManager = userManager;
+        _passwordManager = passwordManager;
+        _principalFactory = principalFactory;
+    }
 
-        public LoginController(
-            UserManager<TimetableUser> userManager,
-            JwtService jwtService,
-            IUserClaimsPrincipalFactory<TimetableUser> principalFactory)
-            => (_userManager, _jwtService, _principalFactory) = (userManager, jwtService, principalFactory);
 
-        [HttpPost("login")]
-        public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
+    [HttpPost("login")]
+    public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        if (await _passwordManager.CheckPasswordAsync(user, request.Password) == PasswordVerificationResult.Failed)
+            return BadRequest();
+
+        var principal = await _principalFactory.CreateAsync(user);
+        var token = _jwtService.CreateToken(principal);
+
+        return new LoginResponse
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            Token = token
+        };
+    }
 
-            if (!await _userManager.CheckPasswordAsync(user, request.Password))
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(RegisterRequest request)
+    {
+        var result = await _userManager.CreateAsync(
+            new TimetableUser
             {
-                return BadRequest();
-            }
+                Email = request.Email,
+                FullName = request.FullName,
+                Address = request.Address,
+                PhoneNumber = request.PhoneNumber
+            },
+            request.Password
+        );
 
-            var principal = await _principalFactory.CreateAsync(user);
-            var token = _jwtService.CreateToken(principal);
+        if (!result.Succeeded) return BadRequest(result.Failure);
 
-            return new LoginResponse()
-            {
-                Token = token
-            };
-        }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest request)
-        {
-            var result = await _userManager.CreateAsync(
-                new TimetableUser()
-                {
-                    Email = request.Email,
-                    FullName = request.FullName,
-                    Address = request.Address,
-                    PhoneNumber = request.PhoneNumber
-                },
-                request.Password
-            );
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            return Ok();
-        }
-        
-        [HttpPost("forgot-password")]
-        public async Task<IActionResult> RequestPasswordReset(RequestPasswordResetRequest request)
-        {
-            throw new NotImplementedException();
-        }
-        
-        [HttpPost("password-reset")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
-        {
-            throw new NotImplementedException();
-        }
+        return Ok();
     }
 }

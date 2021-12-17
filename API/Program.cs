@@ -1,49 +1,63 @@
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using Model.Dal;
-using Model.Dal.Identity;
-using Model.Dal.Repositories;
-using RetardCheck.Auth.Options;
 using API.Auth;
-using API.Auth.Authorization.Identity;
-using Model.Profile;
+using API.Auth.Authorization;
+using Arch.EntityFrameworkCore.UnitOfWork;
+using FilteringOrderingPagination.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Model.Auth;
+using Model.Dal;
+using Model.Entities;
+using Model.Users;
+using Model.Validation;
+using Model.Validation.Abstractions;
+using RetardCheck.Auth.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(o =>
+{
+    o.ModelBinderProviders.Add(new FilterBinderProvider());
+    o.ModelBinderProviders.Add(new PagingBinderProvider());
+});
 
 builder.Services.AddDbContext<TimetableDbContext>(o =>
-{
-    o.UseSqlite(builder.Configuration.GetConnectionString("timetableDb"));
-});
-builder.Services.AddScoped<TimetableUserStore>();
-builder.Services.AddScoped<UsersRepository>();
-builder.Services.AddScoped<StudentsRepository>();
-builder.Services.AddScoped<TeachersRepository>();
-builder.Services.AddScoped<GroupsRepository>();
+    {
+        o.UseSqlite(builder.Configuration.GetConnectionString("timetableDb"));
+    })
+    .AddUnitOfWork<TimetableDbContext>();
 
-builder.Services.AddIdentityCore<TimetableUser>()
-    .AddUserStore<TimetableUserStore>()
-    .AddClaimsPrincipalFactory<TimetableUserClaimsPrincipalFactory>()
-    .AddDefaultTokenProviders();
+builder.Services.AddScoped<IValidator<Discipline>, DisciplineValidator>();
+builder.Services.AddScoped<IValidator<Group>, GroupValidator>();
+builder.Services.AddScoped<IValidator<TeacherLoad>, LoadValidator>();
+builder.Services.AddScoped<IValidator<Student>, StudentValidator>();
+builder.Services.AddScoped<IValidator<Subject>, SubjectValidator>();
+builder.Services.AddScoped<IValidator<Teacher>, TeacherValidator>();
+builder.Services.AddScoped<IValidator<TimetableEntry>, TimetableEntryValidator>();
+builder.Services.AddScoped<IValidator<TimetableException>, TimetableExceptionValidator>();
+builder.Services.AddScoped<TimetableUserManager>();
+builder.Services.AddScoped<PasswordManager>();
+builder.Services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
+builder.Services.AddSingleton<PasswordValidator>();
+builder.Services.AddScoped<IValidator<TimetableUser>, UserValidator>();
+builder.Services.AddScoped<IUserClaimsPrincipalFactory, UserClaimsPrincipalFactory>();
 
+
+builder.Services.Configure<PasswordHasherOptions>(
+    builder.Configuration.GetSection(PasswordHasherOptions.PasswordHasher));
+builder.Services.Configure<PasswordValidationOptions>(
+    builder.Configuration.GetSection(PasswordValidationOptions.PasswordValidation));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.Jwt));
 builder.Services.AddScoped<JwtService>();
-            
-JwtOptions jwtOptions = builder.Configuration.GetSection(JwtOptions.Jwt).Get<JwtOptions>();
+
+var jwtOptions = builder.Configuration.GetSection(JwtOptions.Jwt).Get<JwtOptions>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(o =>
     {
         o.RequireHttpsMetadata = false;
-        o.TokenValidationParameters = new TokenValidationParameters()
+        o.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
             ValidateAudience = false,
@@ -56,13 +70,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 if (builder.Environment.IsDevelopment())
-{
     builder.Services.AddCors(
         options => options.AddPolicy("devCors", opts => opts
             .AllowAnyOrigin()
             .AllowAnyHeader()
-            .AllowAnyMethod()));    
-}
+            .AllowAnyMethod()));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

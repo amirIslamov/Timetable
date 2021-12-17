@@ -1,7 +1,6 @@
-﻿namespace API.Auth.Dto.Auth
+﻿namespace API.Auth.Dto.Auth;
+
+public class LoginResponse
 {
-    public class LoginResponse
-    {
-        public string Token { get; set; }
-    }
+    public string Token { get; set; }
 }

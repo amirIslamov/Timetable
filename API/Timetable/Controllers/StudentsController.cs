@@ -1,130 +1,122 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Timetable.Dto.Student;
+using Arch.EntityFrameworkCore.UnitOfWork;
+using Arch.EntityFrameworkCore.UnitOfWork.Collections;
+using FilteringOrderingPagination;
+using FilteringOrderingPagination.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Model.Dal.Repositories;
+using Model.Dal;
+using Model.Entities;
 using Model.Profile.Roles;
-using Model.Timetable;
-using Repositories.Util;
-using API.Timetable.Dto;
+using Model.Validation.Abstractions;
 
-namespace API.Timetable.Controllers
+namespace API.Timetable.Controllers;
+
+[Route("api/v1/students")]
+[ApiController]
+public class StudentsController : ControllerBase
 {
-    [Route("api/v1/students")]
-    [ApiController]
-    public class StudentsController : ControllerBase
+    private readonly IUnitOfWork<TimetableDbContext> _unitOfWork;
+    private readonly IValidator<Student> _validator;
+
+    public StudentsController(IValidator<Student> validator, IUnitOfWork<TimetableDbContext> unitOfWork)
     {
-        protected StudentsRepository _studentsRepository;
-        protected GroupsRepository _groupsRepository;
-        protected UsersRepository _usersRepository;
+        _validator = validator;
+        _unitOfWork = unitOfWork;
+    }
 
-        public StudentsController(StudentsRepository studentsRepository, GroupsRepository groupsRepository, UsersRepository usersRepository)
+    [HttpGet]
+    public async Task<ActionResult<IPagedList<ListStudentsResponse>>> GetStudents(
+        FopRequest<Student, StudentFilter> request)
+    {
+        var pagedStudents = await _unitOfWork
+            .GetRepository<Student>()
+            .GetPagedListAsync(
+                s => ListStudentsResponse.FromStudent(s),
+                request);
+
+        return Ok(pagedStudents);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<GetStudentResponse>> GetStudent(long id)
+    {
+        var student = await _unitOfWork
+            .GetRepository<Student>()
+            .GetFirstOrDefaultAsync(
+                include: q => q.Include(s => s.User),
+                predicate: s => s.Id == id);
+
+        if (student == null) return NotFound();
+
+        return GetStudentResponse.FromStudent(student);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateStudent(CreateStudentRequest request)
+    {
+        var student = new Student
         {
-            _studentsRepository = studentsRepository;
-            _groupsRepository = groupsRepository;
-            _usersRepository = usersRepository;
-        }
+            Id = request.UserId,
+            GroupId = request.GroupId,
+            FatherContacts = request.FatherContacts,
+            MotherContacts = request.MotherContacts
+        };
 
-        [HttpGet]
-        public async Task<ActionResult<ListStudentsResponse>> GetStudents([FromQuery] ListStudentsRequest request)
+        var validationResult = await _validator.ValidateAsync(student);
+
+        if (validationResult.Succeeded)
         {
-            var paging = new Paging(request.PageNum, request.PageSize);
-            var students = _studentsRepository
-                .Include(s => s.User)
-                .Paginate(paging);
+            await _unitOfWork
+                .GetRepository<Student>()
+                .InsertAsync(student);
 
-            return ListStudentsResponse.FromStudentsAndPaging(students, paging);
-        }
-        
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GetStudentResponse>> GetStudent(long id)
-        {
-            var student = await _studentsRepository
-                .Include(s => s.User)
-                .Where(t => t.Id == id)
-                .FirstOrDefaultAsync();;
+            var user = await _unitOfWork
+                .GetRepository<TimetableUser>()
+                .FindAsync(new {student.Id});
 
-            if (student == null)
-            {
-                return NotFound();
-            }
-
-            return GetStudentResponse.FromStudent(student);
-        }
-        
-        [HttpPost]
-        public async Task<IActionResult> CreateStudent(CreateStudentRequest request)
-        {
-            var user = _usersRepository.Find(request.UserId);
-            if (user == null)
-            {
-                return BadRequest();
-            }
-
-            if (user.RoleSet.ContainsRole(Role.Student))
-            {
-                return BadRequest();
-            }
-
-            var group = _groupsRepository.Find(request.GroupId);
-
-            if (group == null)
-            {
-                return BadRequest();
-            }
-
-            var student = new Student()
-            {
-                Id = user.Id,
-                Group = group,
-                User = user,
-                FatherContacts = request.FatherContacts,
-                MotherContacts = request.MotherContacts,
-            };
             user.RoleSet.AddRole(Role.Student);
-            
-            _studentsRepository.Insert(student);
-            await _studentsRepository.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetStudent), 
+            _unitOfWork
+                .GetRepository<TimetableUser>()
+                .Update(user);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetStudent),
                 new {id = student.Id},
                 GetStudentResponse.FromStudent(student));
         }
-        
-        [HttpPut("{id}")]
-        public async Task<ActionResult<GetStudentResponse>> UpdateStudent(UpdateStudentRequest request, long id)
+
+        return BadRequest(validationResult.Failure);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<GetStudentResponse>> UpdateStudent(UpdateStudentRequest request, long id)
+    {
+        var student = await _unitOfWork
+            .GetRepository<Student>()
+            .GetFirstOrDefaultAsync(
+                include: q => q.Include(s => s.User),
+                predicate: s => s.Id == id);
+
+        student.FatherContacts = request.FatherContacts;
+        student.MotherContacts = request.MotherContacts;
+        student.GroupId = request.GroupId;
+
+        var validationResult = await _validator.ValidateAsync(student);
+
+        if (validationResult.Succeeded)
         {
-            var student = await _studentsRepository.Include(t => t.User)
-                .Where(t => t.Id == id)
-                .FirstOrDefaultAsync();;
+            _unitOfWork
+                .GetRepository<Student>()
+                .Update(student);
 
-            if (student == null)
-            {
-                return NotFound();
-            }
-
-            student.FatherContacts = request.FatherContacts;
-            student.MotherContacts = request.MotherContacts;
-
-            if (request.GroupId != student.GroupId)
-            {
-                var group = _groupsRepository.Find(request.GroupId);
-
-                if (group == null)
-                {
-                    return BadRequest();
-                }
-
-                student.Group = group;
-                student.GroupId = group.Id;
-            }
-            
-            _studentsRepository.Update(student);
-            await _studentsRepository.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return GetStudentResponse.FromStudent(student);
         }
+
+        return BadRequest(validationResult.Failure);
     }
 }

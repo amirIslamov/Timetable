@@ -1,8 +1,7 @@
-﻿namespace API.Timetable.Dto.User
+﻿namespace API.Timetable.Dto.User;
+
+public class GetUsersRequest
 {
-    public class GetUsersRequest
-    {
-        public int PageNum { get; set; }
-        public int PageSize { get; set; }
-    }
+    public int PageNum { get; set; }
+    public int PageSize { get; set; }
 }

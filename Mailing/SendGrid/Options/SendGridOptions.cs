@@ -1,10 +1,9 @@
-﻿namespace Mailing.SendGrid.Options
+﻿namespace Mailing.SendGrid.Options;
+
+public class SendGridOptions
 {
-    public class SendGridOptions
-    {   
-        public static readonly string Mailing = "Mailing";
-        
-        public string SendGridApiKey { get; set; }
-        public string FromEmail { get; set; }
-    }
+    public static readonly string Mailing = "Mailing";
+
+    public string SendGridApiKey { get; set; }
+    public string FromEmail { get; set; }
 }

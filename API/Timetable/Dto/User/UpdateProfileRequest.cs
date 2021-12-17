@@ -1,11 +1,10 @@
-﻿using Model.Profile;
+﻿using Model.Entities;
 
-namespace API.Timetable.Dto.User
+namespace API.Timetable.Dto.User;
+
+public class UpdateProfileRequest
 {
-    public class UpdateProfileRequest
-    {
-        public string PhoneNumber { get; set; }
-        public FullName FullName { get; set; }
-        public Address Address { get; set; }
-    }
+    public string PhoneNumber { get; set; }
+    public FullName FullName { get; set; }
+    public Address Address { get; set; }
 }

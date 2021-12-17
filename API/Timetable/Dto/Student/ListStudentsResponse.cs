@@ -1,35 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Repositories.Util;
-using Model.Profile;
+﻿using Model.Entities;
 
-namespace API.Timetable.Dto.Student
+namespace API.Timetable.Dto.Student;
+
+public class ListStudentsResponse
 {
-    public class ListStudentsResponse
+    public long Id { get; set; }
+    public string Email { get; set; }
+    public FullName FullName { get; set; }
+    public long GroupId { get; set; }
+
+    public static ListStudentsResponse FromStudent(Model.Entities.Student student)
     {
-        public List<ShortStudent> Students { get; set; }
-        public Paging Paging { get; set; }
-
-        public class ShortStudent
+        return new ListStudentsResponse
         {
-            public long Id { get; set; }
-            public string Email { get; set; }
-            public FullName FullName { get; set; }
-            public long GroupId { get; set; }
-            public static ShortStudent FromStudent(global::Model.Timetable.Student student) => new ListStudentsResponse.ShortStudent()
-            {
-                Id = student.Id,
-                Email = student.User.Email,
-                FullName = student.User.FullName,
-                GroupId = student.GroupId
-            };
-        }
-
-        public static ListStudentsResponse FromStudentsAndPaging(IEnumerable<global::Model.Timetable.Student> users, Paging paging)
-            => new ListStudentsResponse()
-            {
-                Paging = paging,
-                Students = users.Select(ShortStudent.FromStudent).ToList()
-            };
+            Id = student.Id,
+            Email = student.User.Email,
+            FullName = student.User.FullName,
+            GroupId = student.GroupId
+        };
     }
 }

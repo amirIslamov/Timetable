@@ -1,37 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Model.Entities;
 using Model.Profile.Roles;
-using Repositories.Util;
-using Model.Profile;
 
-namespace API.Timetable.Dto.User
+namespace API.Timetable.Dto.User;
+
+public class ListUsersResponse
 {
-    public class ListUsersResponse
+    public long Id { get; set; }
+    public string Email { get; set; }
+    public FullName FullName { get; set; }
+    public List<Role> Roles { get; set; }
+
+    public static ListUsersResponse FromUser(TimetableUser user)
     {
-        public List<ShortUser> Users { get; set; }
-        public Paging Paging { get; set; }
-
-        public class ShortUser
+        return new ListUsersResponse
         {
-            public long Id { get; set; }
-            public string Email { get; set; }
-            public FullName FullName { get; set; }
-            public List<Role> Roles { get; set; }
-
-            public static ShortUser FromUser(TimetableUser user) => new ShortUser()
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Roles = user.RoleSet.Roles.ToList(),
-                FullName = user.FullName
-            };
-        }
-
-        public static ListUsersResponse FromUsersAndPaging(IEnumerable<TimetableUser> users, Paging paging)
-            => new ListUsersResponse()
-            {
-                Paging = paging,
-                Users = users.Select(ShortUser.FromUser).ToList()
-            };
+            Id = user.Id,
+            Email = user.Email,
+            Roles = user.RoleSet.Roles.ToList(),
+            FullName = user.FullName
+        };
     }
 }
