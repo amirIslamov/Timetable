@@ -8,18 +8,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.0"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.2.3"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.2.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="6.0.0" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.2.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.2.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\FilteringOrderingPagination\FilteringOrderingPagination.csproj"/>
-        <ProjectReference Include="..\Model\Model.csproj"/>
+        <ProjectReference Include="..\FilteringOrderingPagination\FilteringOrderingPagination.csproj" />
+        <ProjectReference Include="..\Model\Model.csproj" />
     </ItemGroup>
 
 </Project>
