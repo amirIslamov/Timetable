@@ -1,12 +1,49 @@
-﻿using Model.Entities;
+﻿using Arch.EntityFrameworkCore.UnitOfWork;
+using Model.Dal;
+using Model.Entities;
+using Model.Profile.Roles;
 using Model.Validation.Abstractions;
 
 namespace Model.Validation;
 
 public class TeacherValidator : IValidator<Teacher>
 {
+    private IRepositoryFactory _repositoryFactory;
+    private TimetableErrorDescriber _describer;
+
+    public TeacherValidator(IRepositoryFactory repositoryFactory, TimetableErrorDescriber describer)
+    {
+        _repositoryFactory = repositoryFactory;
+        _describer = describer;
+    }
+
     public async Task<Result<IValidationResult>> ValidateAsync(Teacher entity)
     {
-        throw new NotImplementedException();
+        var errors = new List<IValidationError>();
+
+        await ValidateUser(entity, errors);
+
+        if (errors.Count == 0) return Result<IValidationResult>.Create();
+
+        return Result<IValidationResult>.Failed(new ValidationResult
+        {
+            Errors = errors
+        });
+    }
+    
+    public async Task ValidateUser(Teacher teacher, IList<IValidationError> errors)
+    {
+        var user = await _repositoryFactory
+            .GetRepository<TimetableUser>()
+            .FindAsync(new {Id = teacher.Id});
+
+        if (user == null)
+        {
+            errors.Add(_describer.InvalidUserId(teacher.Id));
+            return;
+        }
+        
+        if (user.RoleSet.ContainsRole(Role.Teacher))
+            errors.Add(_describer.DuplicateStudent(teacher.Id));
     }
 }

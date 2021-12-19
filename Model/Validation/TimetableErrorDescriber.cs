@@ -144,4 +144,18 @@ public class TimetableErrorDescriber
             nameof(InvalidTeacherId),
             $"Invalid teacher load id {entryTeacherLoadId}: such teacher load does not exist");
     }
+
+    public IValidationError InvalidUserId(long studentId)
+    {
+        return new ValidationError(
+            nameof(InvalidUserId),
+            $"Invalid user id {studentId}: such user does not exist");
+    }
+
+    public IValidationError DuplicateStudent(long studentId)
+    {
+        return new ValidationError(
+            nameof(DuplicateStudent),
+            $"Invalid user id {studentId}: such student already exists");    
+    }
 }
