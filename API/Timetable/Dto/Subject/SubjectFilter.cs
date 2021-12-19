@@ -13,6 +13,6 @@ public class SubjectFilter : IFilter<Model.Entities.Subject>
         var nameSpec = Name.AppliedTo<Model.Entities.Subject>(s => s.Name);
         var codeSpec = Code.AppliedTo<Model.Entities.Subject>(s => s.Code);
 
-        return new AndSpecification<Model.Entities.Subject>(nameSpec, codeSpec);
+        return nameSpec.And(codeSpec);
     }
 }

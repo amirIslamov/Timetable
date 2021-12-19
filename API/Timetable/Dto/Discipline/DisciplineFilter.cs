@@ -16,6 +16,6 @@ public class DisciplineFilter : IFilter<Model.Entities.Discipline>
         var subjectIdSpec = SubjectId.AppliedTo<Model.Entities.Discipline>(d => d.SubjectId);
         var controlTypeSpec = ControlType.AppliedTo<Model.Entities.Discipline>(d => d.ControlType);
 
-        return new AndSpecification<Model.Entities.Discipline>(groupIdSpec, subjectIdSpec, controlTypeSpec);
+        return groupIdSpec.And(subjectIdSpec).And(controlTypeSpec);
     }
 }

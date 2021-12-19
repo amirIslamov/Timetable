@@ -15,9 +15,6 @@ public class GroupFilter : IFilter<Model.Entities.Group>
         var nameSpec = Name.AppliedTo<Model.Entities.Group>(d => d.Name);
         var shortNameSpec = ShortName.AppliedTo<Model.Entities.Group>(d => d.ShortName);
 
-        return new AndSpecification<Model.Entities.Group>(
-            curatorIdSpec,
-            nameSpec,
-            shortNameSpec);
+        return curatorIdSpec.And(nameSpec).And(shortNameSpec);
     }
 }

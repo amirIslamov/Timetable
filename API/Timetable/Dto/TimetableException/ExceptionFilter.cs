@@ -18,6 +18,9 @@ public class ExceptionFilter : IFilter<Model.Entities.TimetableException>
         var groupSpec =
             GroupId.AppliedTo<Model.Entities.TimetableException>(e => e.TimetableEntry.TeacherLoad.Discipline.GroupId);
 
-        return new AndSpecification<Model.Entities.TimetableException>(entrySpec, dateSpec, teacherSpec, groupSpec);
+        return entrySpec
+            .And(dateSpec)
+            .And(teacherSpec)
+            .And(groupSpec);
     }
 }

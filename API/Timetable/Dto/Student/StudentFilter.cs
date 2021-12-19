@@ -19,8 +19,10 @@ public class StudentFilter : IFilter<Model.Entities.Student>
         var emailSpec = Email.AppliedTo<Model.Entities.Student>(s => s.User.Email);
         var groupSpec = GroupId.AppliedTo<Model.Entities.Student>(s => s.GroupId);
 
-        return new AndSpecification<Model.Entities.Student>(
-            fnSpec, lnSpec, pnSpec, emailSpec, groupSpec
-        );
+        return fnSpec
+            .And(lnSpec)
+            .And(pnSpec)
+            .And(emailSpec)
+            .And(groupSpec);
     }
 }

@@ -20,6 +20,10 @@ public class EntryFilter : IFilter<Model.Entities.TimetableEntry>
         var teacherSpec = TeacherId.AppliedTo<Model.Entities.TimetableEntry>(e => e.TeacherLoad.TeacherId);
         var groupSpec = GroupId.AppliedTo<Model.Entities.TimetableEntry>(e => e.TeacherLoad.Discipline.GroupId);
 
-        return new AndSpecification<Model.Entities.TimetableEntry>(daySpec, weekSpec, loadSpec, teacherSpec, groupSpec);
+        return daySpec
+            .And(weekSpec)
+            .And(loadSpec)
+            .And(teacherSpec)
+            .And(groupSpec);
     }
 }

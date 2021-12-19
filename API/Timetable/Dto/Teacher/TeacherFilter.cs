@@ -19,8 +19,10 @@ public class TeacherFilter : IFilter<Model.Entities.Teacher>
         var emailSpec = Email.AppliedTo<Model.Entities.Teacher>(s => s.User.Email);
         var chairSpec = Chair.AppliedTo<Model.Entities.Teacher>(s => s.Chair);
 
-        return new AndSpecification<Model.Entities.Teacher>(
-            fnSpec, lnSpec, pnSpec, emailSpec, chairSpec
-        );
+        return fnSpec
+            .And(lnSpec)
+            .And(pnSpec)
+            .And(emailSpec)
+            .And(chairSpec);
     }
 }

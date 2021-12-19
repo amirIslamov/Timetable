@@ -14,6 +14,6 @@ public class LoadFilter : IFilter<TeacherLoad>
         var teacherSpec = TeacherId.AppliedTo<TeacherLoad>(l => l.TeacherId);
         var disciplineSpec = DisciplineId.AppliedTo<TeacherLoad>(l => l.DisciplineId);
 
-        return new AndSpecification<TeacherLoad>(teacherSpec, disciplineSpec);
+        return teacherSpec.And(disciplineSpec);
     }
 }

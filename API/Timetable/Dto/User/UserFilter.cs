@@ -18,8 +18,9 @@ public class UserFilter : IFilter<TimetableUser>
         var pnSpec = Patronymic.AppliedTo<TimetableUser>(u => u.FullName.Patronymic);
         var emailSpec = Email.AppliedTo<TimetableUser>(u => u.Email);
 
-        return new AndSpecification<TimetableUser>(
-            fnSpec, lnSpec, pnSpec, emailSpec
-        );
+        return fnSpec
+            .And(lnSpec)
+            .And(pnSpec)
+            .And(emailSpec);
     }
 }
