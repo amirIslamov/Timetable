@@ -1,9 +1,12 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using FilteringOrderingPagination.Models;
 using FilteringOrderingPagination.Models.Paging;
-using FilteringOrderingPagination.Models.Sort;
 using FilteringOrderingPagination.Models.Specifications;
 using Microsoft.EntityFrameworkCore.Query;
 
@@ -16,7 +19,6 @@ public static class RepositoryExtensions
         FopRequest<TEntity, TFilter> request,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
         bool disableTracking = true,
-        CancellationToken cancellationToken = default,
         bool ignoreQueryFilters = false) where TEntity : class where TFilter : IFilter<TEntity>
     {
         return repository.GetPagedList(
@@ -92,20 +94,17 @@ public static class RepositoryExtensions
         this IRepository<TEntity> repository,
         Specification<TEntity> specification,
         Paging paging,
-        Sort<TEntity> sort,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
         bool disableTracking = true,
-        CancellationToken cancellationToken = default,
         bool ignoreQueryFilters = false) where TEntity : class
     {
         return repository.GetPagedList(
             predicate: specification.Expression,
-            orderBy: q => q.Sort(sort),
-            include,
-            paging.PageNumber,
-            paging.PageSize,
-            disableTracking,
-            ignoreQueryFilters
+            include: include,
+            pageIndex: paging.PageNumber,
+            pageSize: paging.PageSize,
+            disableTracking: disableTracking,
+            ignoreQueryFilters: ignoreQueryFilters
         );
     }
 
@@ -113,7 +112,6 @@ public static class RepositoryExtensions
         this IRepository<TEntity> repository,
         Specification<TEntity> specification,
         Paging paging,
-        Sort<TEntity> sort,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default,
@@ -121,11 +119,10 @@ public static class RepositoryExtensions
     {
         return repository.GetPagedListAsync(
             predicate: specification.Expression,
-            orderBy: q => q.Sort(sort),
-            include,
-            paging.PageNumber,
-            paging.PageSize,
-            disableTracking,
+            include: include,
+            pageIndex: paging.PageNumber,
+            pageSize: paging.PageSize,
+            disableTracking: disableTracking,
             ignoreQueryFilters: ignoreQueryFilters,
             cancellationToken: cancellationToken
         );
@@ -136,20 +133,18 @@ public static class RepositoryExtensions
         Expression<Func<TEntity, TResult>> selector,
         Specification<TEntity> specification,
         Paging paging,
-        Sort<TEntity> sort,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
         bool disableTracking = true,
         bool ignoreQueryFilters = false) where TResult : class where TEntity : class
     {
         return repository.GetPagedList(
-            selector,
-            specification.Expression,
-            q => q.Sort(sort),
-            include,
-            paging.PageNumber,
-            paging.PageSize,
-            disableTracking,
-            ignoreQueryFilters
+            selector: selector,
+            predicate: specification.Expression,
+            include: include,
+            pageIndex: paging.PageNumber,
+            pageSize: paging.PageSize,
+            disableTracking: disableTracking,
+            ignoreQueryFilters: ignoreQueryFilters
         );
     }
 
@@ -158,20 +153,18 @@ public static class RepositoryExtensions
         Expression<Func<TEntity, TResult>> selector,
         Specification<TEntity> specification,
         Paging paging,
-        Sort<TEntity> sort,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default,
         bool ignoreQueryFilters = false) where TResult : class where TEntity : class
     {
         return repository.GetPagedListAsync(
-            selector,
-            specification.Expression,
-            q => q.Sort(sort),
-            include,
-            paging.PageNumber,
-            paging.PageSize,
-            disableTracking,
+            selector: selector,
+            predicate: specification.Expression,
+            include: include,
+            pageIndex: paging.PageNumber,
+            pageSize: paging.PageSize,
+            disableTracking: disableTracking,
             ignoreQueryFilters: ignoreQueryFilters,
             cancellationToken: cancellationToken
         );

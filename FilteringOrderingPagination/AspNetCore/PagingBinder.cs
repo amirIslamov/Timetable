@@ -1,4 +1,5 @@
-﻿using FilteringOrderingPagination.Models.Paging;
+﻿using System.Threading.Tasks;
+using FilteringOrderingPagination.Models.Paging;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 

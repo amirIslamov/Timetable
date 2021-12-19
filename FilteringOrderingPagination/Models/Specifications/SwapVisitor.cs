@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace FilteringOrderingPagination.Models.Expressions;
+namespace FilteringOrderingPagination.Models.Specifications;
 
 public class SwapVisitor : ExpressionVisitor
 {
