@@ -115,7 +115,12 @@ public class TimetableUserManager
 
     public async Task<TimetableUser> GetUserAsync(ClaimsPrincipal httpContextUser)
     {
-        var id = long.Parse(httpContextUser.FindFirstValue(ClaimTypes.NameIdentifier));
+        var idClaim = httpContextUser
+            .FindFirst(x => x.Type == ClaimTypes.NameIdentifier);
+
+        if (idClaim == null) return null;
+        
+        var id = long.Parse(idClaim.Value);
 
         return await FindAsync(id);
     }
