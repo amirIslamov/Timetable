@@ -1,8 +1,10 @@
 using API.Timetable.Dto.Discipline;
+using API.Timetable.Dto.Load;
 using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using FilteringOrderingPagination;
 using FilteringOrderingPagination.Models;
+using FilteringOrderingPagination.Models.Specifications;
 using Microsoft.AspNetCore.Mvc;
 using Model.Dal;
 using Model.Entities;
@@ -117,5 +119,18 @@ public class DisciplineController : ControllerBase
         await _unitOfWork.SaveChangesAsync();
 
         return Ok();
+    }
+    
+    [HttpGet("{disciplineId}/loads")]
+    public async Task<ActionResult<IPagedList<ListLoadsResponse>>> GetLoads(long disciplineId, FopRequest<TeacherLoad, LoadFilter> request)
+    {
+        var pagedLoads = await _unitOfWork
+            .GetRepository<TeacherLoad>()
+            .GetPagedListAsync(
+                selector: l => ListLoadsResponse.FromLoad(l),
+                specification: request.Filter.ToSpecification().And(l => l.DisciplineId == disciplineId),
+                paging: request.Paging);
+
+        return Ok(pagedLoads);
     }
 }

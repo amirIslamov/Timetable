@@ -1,8 +1,10 @@
 ﻿using API.Timetable.Dto.TimetableEntry;
+using API.Timetable.Dto.TimetableException;
 using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using FilteringOrderingPagination;
 using FilteringOrderingPagination.Models;
+using FilteringOrderingPagination.Models.Specifications;
 using Microsoft.AspNetCore.Mvc;
 using Model.Dal;
 using Model.Entities;
@@ -11,19 +13,19 @@ using Model.Validation.Abstractions;
 namespace API.Timetable.Controllers;
 
 [ApiController]
-[Route("api/v1/timetable")]
-public class TimetableController : ControllerBase
+[Route("api/v1/entries")]
+public class TimetableEntryController : ControllerBase
 {
     private readonly IUnitOfWork<TimetableDbContext> _unitOfWork;
     private readonly IValidator<TimetableEntry> _validator;
 
-    public TimetableController(IUnitOfWork<TimetableDbContext> unitOfWork, IValidator<TimetableEntry> validator)
+    public TimetableEntryController(IUnitOfWork<TimetableDbContext> unitOfWork, IValidator<TimetableEntry> validator)
     {
         _unitOfWork = unitOfWork;
         _validator = validator;
     }
 
-    [HttpGet("entries")]
+    [HttpGet]
     public async Task<ActionResult<IPagedList<ListEntriesResponse>>> GetTimetableEntries(
         FopRequest<TimetableEntry, EntryFilter> request)
     {
@@ -36,7 +38,7 @@ public class TimetableController : ControllerBase
         return Ok(pagedEntries);
     }
 
-    [HttpGet("entries/{id}")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<GetEntryResponse>> GetEntry(long id)
     {
         var entry = await _unitOfWork
@@ -48,7 +50,7 @@ public class TimetableController : ControllerBase
         return GetEntryResponse.FromEntry(entry);
     }
 
-    [HttpPost("entries")]
+    [HttpPost]
     public async Task<IActionResult> CreateEntry(CreateEntryRequest request)
     {
         var entry = new TimetableEntry
@@ -80,7 +82,7 @@ public class TimetableController : ControllerBase
         return BadRequest(validationResult.Failure);
     }
 
-    [HttpPut("entries/{id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<GetEntryResponse>> UpdateEntry(long id, UpdateEntryRequest request)
     {
         var entry = await _unitOfWork
@@ -117,7 +119,7 @@ public class TimetableController : ControllerBase
         return BadRequest();
     }
 
-    [HttpDelete("entries/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> RemoveEntry(long id)
     {
         var entry = await _unitOfWork
@@ -133,5 +135,19 @@ public class TimetableController : ControllerBase
         await _unitOfWork.SaveChangesAsync();
 
         return Ok();
+    }
+    
+    [HttpGet("{entryId}/exceptions")]
+    public async Task<ActionResult<IPagedList<ListExceptionsResponse>>> GetExceptions(long entryId,
+        FopRequest<TimetableException, ExceptionFilter> request)
+    {
+        var pagedExceptions = await _unitOfWork
+            .GetRepository<TimetableException>()
+            .GetPagedListAsync(
+                selector: e => ListExceptionsResponse.FromException(e),
+                specification: request.Filter.ToSpecification().And(e => e.TimetableEntryId == entryId),
+                paging: request.Paging);
+
+        return Ok(pagedExceptions);
     }
 }

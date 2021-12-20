@@ -11,13 +11,13 @@ using Model.Validation.Abstractions;
 namespace API.Timetable.Controllers;
 
 [ApiController]
-[Route("api/v1/timetable")]
+[Route("api/v1/exceptions")]
 public class TimeTableExceptionController : ControllerBase
 {
     private readonly IUnitOfWork<TimetableDbContext> _unitOfWork;
     private readonly IValidator<TimetableException> _validator;
 
-    [HttpGet("exceptions")]
+    [HttpGet]
     public async Task<ActionResult<IPagedList<ListExceptionsResponse>>> GetExceptions(
         FopRequest<TimetableException, ExceptionFilter> request)
     {
@@ -30,7 +30,7 @@ public class TimeTableExceptionController : ControllerBase
         return Ok(pagedExceptions);
     }
 
-    [HttpGet("exceptions/{id}")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<GetExceptionResponse>> GetException(long id)
     {
         var exception = await _unitOfWork
@@ -42,7 +42,7 @@ public class TimeTableExceptionController : ControllerBase
         return GetExceptionResponse.FromException(exception);
     }
 
-    [HttpPost("exceptions")]
+    [HttpPost]
     public async Task<IActionResult> CreateException(CreateExceptionRequest request)
     {
         var exception = new TimetableException
@@ -75,7 +75,7 @@ public class TimeTableExceptionController : ControllerBase
         return BadRequest(validationResult.Failure);
     }
 
-    [HttpPut("exceptions/{id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<GetExceptionResponse>> UpdateException(long id, UpdateExceptionRequest request)
     {
         var exception = await _unitOfWork
@@ -108,7 +108,7 @@ public class TimeTableExceptionController : ControllerBase
         return BadRequest();
     }
 
-    [HttpDelete("exceptions/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> RemoveException(long id)
     {
         var exception = await _unitOfWork

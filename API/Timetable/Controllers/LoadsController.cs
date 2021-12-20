@@ -1,8 +1,10 @@
 ﻿using API.Timetable.Dto.Load;
+using API.Timetable.Dto.TimetableEntry;
 using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using FilteringOrderingPagination;
 using FilteringOrderingPagination.Models;
+using FilteringOrderingPagination.Models.Specifications;
 using Microsoft.AspNetCore.Mvc;
 using Model.Dal;
 using Model.Entities;
@@ -11,7 +13,7 @@ using Model.Validation.Abstractions;
 namespace API.Timetable.Controllers;
 
 [ApiController]
-[Route("api/v1/routes")]
+[Route("api/v1/loads")]
 public class LoadsController : ControllerBase
 {
     private readonly IUnitOfWork<TimetableDbContext> _unitOfWork;
@@ -122,5 +124,19 @@ public class LoadsController : ControllerBase
         await _unitOfWork.SaveChangesAsync();
 
         return Ok();
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<IPagedList<ListEntriesResponse>>> GetTimetableEntries(long loadId,
+        FopRequest<TimetableEntry, EntryFilter> request)
+    {
+        var pagedEntries = await _unitOfWork
+            .GetRepository<TimetableEntry>()
+            .GetPagedListAsync(
+                selector: e => ListEntriesResponse.FromEntry(e),
+                specification: request.Filter.ToSpecification().And(e => e.TeacherLoadId == loadId),
+                paging: request.Paging);
+
+        return Ok(pagedEntries);
     }
 }

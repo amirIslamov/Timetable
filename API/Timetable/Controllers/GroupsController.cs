@@ -1,8 +1,11 @@
+using API.Timetable.Dto.Discipline;
 using API.Timetable.Dto.Group;
+using API.Timetable.Dto.Student;
 using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using FilteringOrderingPagination;
 using FilteringOrderingPagination.Models;
+using FilteringOrderingPagination.Models.Specifications;
 using Microsoft.AspNetCore.Mvc;
 using Model.Dal;
 using Model.Entities;
@@ -105,5 +108,33 @@ public class GroupsController : ControllerBase
         }
 
         return BadRequest(validationResult.Failure);
+    }
+    
+    [HttpGet("{groupId}/students")]
+    public async Task<ActionResult<IPagedList<ListStudentsResponse>>> GetStudents(long groupId,
+        FopRequest<Student, StudentFilter> request)
+    {
+        var pagedStudents = await _unitOfWork
+            .GetRepository<Student>()
+            .GetPagedListAsync(
+                selector: s => ListStudentsResponse.FromStudent(s),
+                specification: request.Filter.ToSpecification().And(s => s.GroupId == groupId),
+                paging: request.Paging);
+
+        return Ok(pagedStudents);
+    }
+    
+    [HttpGet("{groupId}/disciplines")]
+    public async Task<ActionResult<IPagedList<ListDisciplinesResponse>>>
+        GetDisciplines(long groupId, FopRequest<Discipline, DisciplineFilter> request)
+    {
+        var pagedDisciplines = await _unitOfWork
+            .GetRepository<Discipline>()
+            .GetPagedListAsync(
+                selector: d => ListDisciplinesResponse.FromDiscipline(d),
+                specification: request.Filter.ToSpecification().And(l => l.GroupId == groupId),
+                paging: request.Paging);
+
+        return Ok(pagedDisciplines);
     }
 }
