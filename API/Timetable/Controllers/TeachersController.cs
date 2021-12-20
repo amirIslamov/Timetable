@@ -27,7 +27,7 @@ public class TeachersController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IPagedList<ListTeachersResponse>>> GetTeachers(
-        FopRequest<Teacher, TeacherFilter> request)
+        [FromQuery] FopRequest<Teacher, TeacherFilter> request)
     {
         var pagedTeachers = await _unitOfWork
             .GetRepository<Teacher>()
@@ -39,7 +39,7 @@ public class TeachersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetTeacherResponse>> GetTeacher(long id)
+    public async Task<ActionResult<GetTeacherResponse>> GetTeacher([FromRoute] long id)
     {
         var teacher = await _unitOfWork
             .GetRepository<Teacher>()
@@ -53,7 +53,7 @@ public class TeachersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateTeacher(CreateTeacherRequest request)
+    public async Task<IActionResult> CreateTeacher([FromBody] CreateTeacherRequest request)
     {
         var teacher = new Teacher
         {
@@ -90,7 +90,7 @@ public class TeachersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<GetTeacherResponse>> UpdateTeacher(UpdateTeacherRequest request, long id)
+    public async Task<ActionResult<GetTeacherResponse>> UpdateTeacher([FromBody] UpdateTeacherRequest request, [FromRoute] long id)
     {
         var teacher = await _unitOfWork
             .GetRepository<Teacher>()

@@ -27,8 +27,10 @@ public class UsersController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IPagedList<ListUsersResponse>>> GetUsers(
-        FopRequest<TimetableUser, UserFilter> request)
+        [FromQuery] FopRequest<TimetableUser, UserFilter> request)
     {
+        var predicate = request.Filter.ToSpecification().Expression;
+        
         var pagedUsers = await _unitOfWork
             .GetRepository<TimetableUser>()
             .GetPagedListAsync(
@@ -39,7 +41,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetProfileResponse>> GetUser(long id)
+    public async Task<ActionResult<GetProfileResponse>> GetUser([FromRoute] long id)
     {
         var user = await _userManager.FindAsync(id);
 
@@ -59,7 +61,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<GetProfileResponse>> UpdateUser(UpdateProfileRequest request, long id)
+    public async Task<ActionResult<GetProfileResponse>> UpdateUser([FromBody] UpdateProfileRequest request, [FromRoute] long id)
     {
         var user = await _userManager.FindAsync(id);
 

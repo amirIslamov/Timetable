@@ -26,7 +26,7 @@ public class LoadsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IPagedList<ListLoadsResponse>>> GetLoads(FopRequest<TeacherLoad, LoadFilter> request)
+    public async Task<ActionResult<IPagedList<ListLoadsResponse>>> GetLoads([FromQuery] FopRequest<TeacherLoad, LoadFilter> request)
     {
         var pagedLoads = await _unitOfWork
             .GetRepository<TeacherLoad>()
@@ -38,7 +38,7 @@ public class LoadsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetLoadResponse>> GetLoad(long id)
+    public async Task<ActionResult<GetLoadResponse>> GetLoad([FromRoute] long id)
     {
         var load = await _unitOfWork
             .GetRepository<TeacherLoad>()
@@ -50,7 +50,7 @@ public class LoadsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateLoad(CreateLoadRequest request)
+    public async Task<IActionResult> CreateLoad([FromBody] CreateLoadRequest request)
     {
         var load = new TeacherLoad
         {
@@ -80,7 +80,7 @@ public class LoadsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<GetLoadResponse>> UpdateLoad(long id, UpdateLoadRequest request)
+    public async Task<ActionResult<GetLoadResponse>> UpdateLoad([FromRoute] long id, [FromBody] UpdateLoadRequest request)
     {
         var load = await _unitOfWork
             .GetRepository<TeacherLoad>()
@@ -109,7 +109,7 @@ public class LoadsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> RemoveLoad(long id)
+    public async Task<IActionResult> RemoveLoad([FromRoute] long id)
     {
         var load = await _unitOfWork
             .GetRepository<TeacherLoad>()
@@ -127,8 +127,8 @@ public class LoadsController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<IPagedList<ListEntriesResponse>>> GetTimetableEntries(long loadId,
-        FopRequest<TimetableEntry, EntryFilter> request)
+    public async Task<ActionResult<IPagedList<ListEntriesResponse>>> GetTimetableEntries([FromRoute] long loadId,
+        [FromQuery] FopRequest<TimetableEntry, EntryFilter> request)
     {
         var pagedEntries = await _unitOfWork
             .GetRepository<TimetableEntry>()

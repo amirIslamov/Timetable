@@ -5,9 +5,9 @@ namespace API.Timetable.Dto.Group;
 
 public class GroupFilter : IFilter<Model.Entities.Group>
 {
-    public ValuePropertyPattern<long> CuratorId { get; set; }
-    public StringPattern Name { get; set; }
-    public StringPattern ShortName { get; set; }
+    public ValuePropertyPattern<long> CuratorId { get; set; } = new ValuePropertyPattern<long>();
+    public StringPattern Name { get; set; } = new StringPattern();
+    public StringPattern ShortName { get; set; } = new StringPattern();
 
     public Specification<Model.Entities.Group> ToSpecification()
     {

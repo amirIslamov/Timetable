@@ -27,7 +27,7 @@ public class GroupsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IPagedList<ListGroupsResponse>>> GetGroups(FopRequest<Group, GroupFilter> request)
+    public async Task<ActionResult<IPagedList<ListGroupsResponse>>> GetGroups([FromQuery] FopRequest<Group, GroupFilter> request)
     {
         var pagedGroups = await _unitOfWork
             .GetRepository<Group>()
@@ -39,7 +39,7 @@ public class GroupsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetGroupResponse>> GetGroup(long id)
+    public async Task<ActionResult<GetGroupResponse>> GetGroup([FromRoute] long id)
     {
         var group = await _unitOfWork
             .GetRepository<Group>()
@@ -51,7 +51,7 @@ public class GroupsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateGroup(CreateGroupRequest request)
+    public async Task<IActionResult> CreateGroup([FromBody] CreateGroupRequest request)
     {
         var group = new Group
         {
@@ -81,7 +81,7 @@ public class GroupsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<GetGroupResponse>> UpdateGroup(UpdateGroupRequest request, long id)
+    public async Task<ActionResult<GetGroupResponse>> UpdateGroup([FromBody] UpdateGroupRequest request, [FromRoute] long id)
     {
         var group = await _unitOfWork
             .GetRepository<Group>()
@@ -111,8 +111,8 @@ public class GroupsController : ControllerBase
     }
     
     [HttpGet("{groupId}/students")]
-    public async Task<ActionResult<IPagedList<ListStudentsResponse>>> GetStudents(long groupId,
-        FopRequest<Student, StudentFilter> request)
+    public async Task<ActionResult<IPagedList<ListStudentsResponse>>> GetStudents([FromRoute] long groupId,
+        [FromQuery] FopRequest<Student, StudentFilter> request)
     {
         var pagedStudents = await _unitOfWork
             .GetRepository<Student>()
@@ -126,7 +126,7 @@ public class GroupsController : ControllerBase
     
     [HttpGet("{groupId}/disciplines")]
     public async Task<ActionResult<IPagedList<ListDisciplinesResponse>>>
-        GetDisciplines(long groupId, FopRequest<Discipline, DisciplineFilter> request)
+        GetDisciplines([FromRoute] long groupId, [FromQuery] FopRequest<Discipline, DisciplineFilter> request)
     {
         var pagedDisciplines = await _unitOfWork
             .GetRepository<Discipline>()

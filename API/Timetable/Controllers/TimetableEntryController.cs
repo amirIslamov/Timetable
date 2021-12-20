@@ -27,7 +27,7 @@ public class TimetableEntryController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IPagedList<ListEntriesResponse>>> GetTimetableEntries(
-        FopRequest<TimetableEntry, EntryFilter> request)
+        [FromQuery] FopRequest<TimetableEntry, EntryFilter> request)
     {
         var pagedEntries = await _unitOfWork
             .GetRepository<TimetableEntry>()
@@ -39,7 +39,7 @@ public class TimetableEntryController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetEntryResponse>> GetEntry(long id)
+    public async Task<ActionResult<GetEntryResponse>> GetEntry([FromRoute] long id)
     {
         var entry = await _unitOfWork
             .GetRepository<TimetableEntry>()
@@ -51,7 +51,7 @@ public class TimetableEntryController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateEntry(CreateEntryRequest request)
+    public async Task<IActionResult> CreateEntry([FromBody] CreateEntryRequest request)
     {
         var entry = new TimetableEntry
         {
@@ -83,7 +83,7 @@ public class TimetableEntryController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<GetEntryResponse>> UpdateEntry(long id, UpdateEntryRequest request)
+    public async Task<ActionResult<GetEntryResponse>> UpdateEntry([FromRoute] long id, [FromBody] UpdateEntryRequest request)
     {
         var entry = await _unitOfWork
             .GetRepository<TimetableEntry>()
@@ -120,7 +120,7 @@ public class TimetableEntryController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> RemoveEntry(long id)
+    public async Task<IActionResult> RemoveEntry([FromRoute] long id)
     {
         var entry = await _unitOfWork
             .GetRepository<TimetableEntry>()
@@ -138,8 +138,8 @@ public class TimetableEntryController : ControllerBase
     }
     
     [HttpGet("{entryId}/exceptions")]
-    public async Task<ActionResult<IPagedList<ListExceptionsResponse>>> GetExceptions(long entryId,
-        FopRequest<TimetableException, ExceptionFilter> request)
+    public async Task<ActionResult<IPagedList<ListExceptionsResponse>>> GetExceptions([FromRoute] long entryId,
+        [FromQuery] FopRequest<TimetableException, ExceptionFilter> request)
     {
         var pagedExceptions = await _unitOfWork
             .GetRepository<TimetableException>()

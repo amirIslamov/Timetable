@@ -27,7 +27,7 @@ public class StudentsController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IPagedList<ListStudentsResponse>>> GetStudents(
-        FopRequest<Student, StudentFilter> request)
+        [FromQuery] FopRequest<Student, StudentFilter> request)
     {
         var pagedStudents = await _unitOfWork
             .GetRepository<Student>()
@@ -39,7 +39,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetStudentResponse>> GetStudent(long id)
+    public async Task<ActionResult<GetStudentResponse>> GetStudent([FromRoute] long id)
     {
         var student = await _unitOfWork
             .GetRepository<Student>()
@@ -53,7 +53,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateStudent(CreateStudentRequest request)
+    public async Task<IActionResult> CreateStudent([FromBody] CreateStudentRequest request)
     {
         var student = new Student
         {
@@ -92,7 +92,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<GetStudentResponse>> UpdateStudent(UpdateStudentRequest request, long id)
+    public async Task<ActionResult<GetStudentResponse>> UpdateStudent([FromBody] UpdateStudentRequest request,[FromRoute] long id)
     {
         var student = await _unitOfWork
             .GetRepository<Student>()

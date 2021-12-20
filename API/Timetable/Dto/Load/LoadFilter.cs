@@ -6,7 +6,7 @@ namespace API.Timetable.Dto.Load;
 
 public class LoadFilter : IFilter<TeacherLoad>
 {
-    public ValuePropertyPattern<long> TeacherId { get; set; }
+    public ValuePropertyPattern<long> TeacherId { get; set; } = new ValuePropertyPattern<long>();
 
     public Specification<TeacherLoad> ToSpecification()
     {

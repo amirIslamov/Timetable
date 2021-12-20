@@ -31,7 +31,7 @@ public class TimeTableExceptionController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetExceptionResponse>> GetException(long id)
+    public async Task<ActionResult<GetExceptionResponse>> GetException([FromRoute] long id)
     {
         var exception = await _unitOfWork
             .GetRepository<TimetableException>()
@@ -43,7 +43,7 @@ public class TimeTableExceptionController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateException(CreateExceptionRequest request)
+    public async Task<IActionResult> CreateException([FromBody] CreateExceptionRequest request)
     {
         var exception = new TimetableException
         {
@@ -76,7 +76,7 @@ public class TimeTableExceptionController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<GetExceptionResponse>> UpdateException(long id, UpdateExceptionRequest request)
+    public async Task<ActionResult<GetExceptionResponse>> UpdateException([FromRoute] long id, [FromBody] UpdateExceptionRequest request)
     {
         var exception = await _unitOfWork
             .GetRepository<TimetableException>()
@@ -109,7 +109,7 @@ public class TimeTableExceptionController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> RemoveException(long id)
+    public async Task<IActionResult> RemoveException([FromRoute] long id)
     {
         var exception = await _unitOfWork
             .GetRepository<TimetableException>()

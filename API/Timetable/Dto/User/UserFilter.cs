@@ -6,10 +6,10 @@ namespace API.Timetable.Dto.User;
 
 public class UserFilter : IFilter<TimetableUser>
 {
-    public StringPattern FirstName { get; set; }
-    public StringPattern LastName { get; set; }
-    public StringPattern Patronymic { get; set; }
-    public StringPattern Email { get; set; }
+    public StringPattern FirstName { get; set; } = new StringPattern();
+    public StringPattern LastName { get; set; } = new StringPattern();
+    public StringPattern Patronymic { get; set; } = new StringPattern();
+    public StringPattern Email { get; set; } = new StringPattern();
 
     public Specification<TimetableUser> ToSpecification()
     {

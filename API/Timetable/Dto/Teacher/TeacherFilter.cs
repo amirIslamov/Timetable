@@ -5,11 +5,11 @@ namespace API.Timetable.Dto.Teacher;
 
 public class TeacherFilter : IFilter<Model.Entities.Teacher>
 {
-    public StringPattern FirstName { get; set; }
-    public StringPattern LastName { get; set; }
-    public StringPattern Patronymic { get; set; }
-    public StringPattern Email { get; set; }
-    public StringPattern Chair { get; set; }
+    public StringPattern FirstName { get; set; } = new StringPattern();
+    public StringPattern LastName { get; set; } = new StringPattern();
+    public StringPattern Patronymic { get; set; } = new StringPattern();
+    public StringPattern Email { get; set; } = new StringPattern();
+    public StringPattern Chair { get; set; } = new StringPattern();
 
     public Specification<Model.Entities.Teacher> ToSpecification()
     {

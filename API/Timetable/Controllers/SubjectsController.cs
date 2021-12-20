@@ -25,7 +25,7 @@ public class SubjectsController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IPagedList<ListSubjectsResponse>>> GetSubjects(
-        FopRequest<Subject, SubjectFilter> request)
+        [FromQuery] FopRequest<Subject, SubjectFilter> request)
     {
         var pagedSubjects = await _unitOfWork
             .GetRepository<Subject>()
@@ -37,7 +37,7 @@ public class SubjectsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetSubjectResponse>> GetSubject(long id)
+    public async Task<ActionResult<GetSubjectResponse>> GetSubject([FromRoute] long id)
     {
         var subject = await _unitOfWork
             .GetRepository<Subject>()
@@ -49,7 +49,7 @@ public class SubjectsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateSubject(CreateSubjectRequest request)
+    public async Task<IActionResult> CreateSubject([FromBody] CreateSubjectRequest request)
     {
         var subject = new Subject
         {
@@ -77,7 +77,7 @@ public class SubjectsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<GetSubjectResponse>> UpdateSubject(long id, UpdateSubjectRequest request)
+    public async Task<ActionResult<GetSubjectResponse>> UpdateSubject([FromRoute] long id, [FromBody] UpdateSubjectRequest request)
     {
         var subject = await _unitOfWork
             .GetRepository<Subject>()
@@ -105,7 +105,7 @@ public class SubjectsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> RemoveSubject(long id)
+    public async Task<IActionResult> RemoveSubject([FromRoute] long id)
     {
         var subject = await _unitOfWork
             .GetRepository<Subject>()

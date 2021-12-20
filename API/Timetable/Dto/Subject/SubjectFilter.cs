@@ -5,8 +5,8 @@ namespace API.Timetable.Dto.Subject;
 
 public class SubjectFilter : IFilter<Model.Entities.Subject>
 {
-    public StringPattern Name { get; set; }
-    public StringPattern Code { get; set; }
+    public StringPattern Name { get; set; } = new StringPattern();
+    public StringPattern Code { get; set; } = new StringPattern();
 
     public Specification<Model.Entities.Subject> ToSpecification()
     {
