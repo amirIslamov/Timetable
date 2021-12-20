@@ -9,6 +9,7 @@ public class ListUsersResponse
     public string Email { get; set; }
     public FullName FullName { get; set; }
     public List<Role> Roles { get; set; }
+    public List<Role> RequestedRoles { get; set; }
 
     public static ListUsersResponse FromUser(TimetableUser user)
     {
@@ -17,7 +18,8 @@ public class ListUsersResponse
             Id = user.Id,
             Email = user.Email,
             Roles = user.RoleSet.Roles.ToList(),
-            FullName = user.FullName
+            FullName = user.FullName,
+            RequestedRoles = user.RequestedRoles.Roles.ToList()
         };
     }
 }

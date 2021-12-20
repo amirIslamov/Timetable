@@ -14,6 +14,7 @@ public class TimetableUser
     public Address Address { get; set; }
 
     public RoleSet RoleSet { get; set; } = new();
+    public RoleSet RequestedRoles { get; set; } = new();
 }
 
 public class FullName

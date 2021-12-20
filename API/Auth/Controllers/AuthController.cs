@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Model.Auth;
 using Model.Dal;
 using Model.Entities;
+using Model.Profile.Roles;
 using Model.Users;
 
 namespace API.Auth.Controllers;
@@ -55,13 +56,21 @@ public class LoginController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
+        var roleSet = new RoleSet();
+
+        foreach (var role in request.RequestedRoles)
+        {
+            roleSet.AddRole(role);
+        }
+        
         var result = await _userManager.CreateAsync(
             new TimetableUser
             {
                 Email = request.Email,
                 FullName = request.FullName,
                 Address = request.Address,
-                PhoneNumber = request.PhoneNumber
+                PhoneNumber = request.PhoneNumber,
+                RequestedRoles = roleSet
             },
             request.Password
         );

@@ -44,6 +44,13 @@ public class TimetableDbContext : DbContext
                     sa.Ignore(sa => sa.Roles);
                     sa.Property("_roleBitSet");
                 });
+            
+            e.OwnsOne(u => u.RequestedRoles,
+                sa =>
+                {
+                    sa.Ignore(sa => sa.Roles);
+                    sa.Property("_roleBitSet");
+                });
 
             e.OwnsOne(u => u.FullName);
             e.OwnsOne(u => u.Address);
