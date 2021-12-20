@@ -70,13 +70,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-if (builder.Environment.IsDevelopment())
-    builder.Services.AddCors(
-        options => options.AddPolicy("devCors", opts => opts
-            .AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod()));
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -92,6 +85,13 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true)
+    .AllowCredentials()
+); 
 
 app.MapControllers();
 
