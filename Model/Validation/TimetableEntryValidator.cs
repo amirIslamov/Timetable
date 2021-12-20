@@ -16,13 +16,14 @@ public class TimetableEntryValidator : IValidator<TimetableEntry>
         _describer = describer;
     }
 
+    private TeacherLoad _teacherLoad;
+
     public async Task<Result<IValidationResult>> ValidateAsync(TimetableEntry entity)
     {
         var errors = new List<IValidationError>();
 
-        await ValidateTime(entity, errors);
-        await ValidateTeacherLoad(entity, errors);
-
+        await Validate(entity, errors);
+        
         if (errors.Count == 0) return Result<IValidationResult>.Create();
 
         return Result<IValidationResult>.Failed(new ValidationResult
@@ -31,7 +32,7 @@ public class TimetableEntryValidator : IValidator<TimetableEntry>
         });
     }
 
-    public async Task ValidateTime(TimetableEntry entry, IList<IValidationError> errors)
+    public async Task Validate(TimetableEntry entry, IList<IValidationError> errors)
     {
         var teacherLoad = await _repositoryFactory
             .GetRepository<TeacherLoad>()
@@ -39,24 +40,22 @@ public class TimetableEntryValidator : IValidator<TimetableEntry>
                 predicate: l => l.Id == entry.TeacherLoadId,
                 include: q => q.Include(l => l.Discipline));
 
+        if (teacherLoad == null)
+        {
+            errors.Add(_describer.InvalidTeacherLoadId(entry.TeacherLoadId));
+            return;
+        }
+
         var entryAtTheSameTime = await _repositoryFactory
             .GetRepository<TimetableEntry>()
             .GetFirstOrDefaultAsync(
                 predicate: e =>
-                    e.TeacherLoad.Discipline.GroupId == teacherLoad.Discipline.GroupId
-                    && e.WeekType == entry.WeekType
+                    e.WeekType == entry.WeekType
                     && e.DayOfWeek == entry.DayOfWeek
-                    && e.ClassNum == entry.ClassNum);
+                    && e.ClassNum == entry.ClassNum
+                    && e.GroupId == teacherLoad.Discipline.GroupId);
 
         if (entryAtTheSameTime != null) errors.Add(_describer.EntryAtTheSameTimeExists(entry.TeacherLoadId));
-    }
-
-    public async Task ValidateTeacherLoad(TimetableEntry entry, IList<IValidationError> errors)
-    {
-        var teacherLoad = await _repositoryFactory
-            .GetRepository<TeacherLoad>()
-            .FindAsync(entry.TeacherLoadId);
-
-        if (teacherLoad == null) errors.Add(_describer.InvalidTeacherLoadId(entry.TeacherLoadId));
+        entry.GroupId = _teacherLoad.Discipline.GroupId;
     }
 }

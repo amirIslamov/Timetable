@@ -16,8 +16,14 @@ namespace API.Timetable.Controllers;
 [Route("api/v1/disciplines")]
 public class DisciplineController : ControllerBase
 {
-    private IUnitOfWork<TimetableDbContext> _unitOfWork;
-    private IValidator<Discipline> _validator;
+    private readonly IUnitOfWork<TimetableDbContext> _unitOfWork;
+    private readonly IValidator<Discipline> _validator;
+
+    public DisciplineController(IUnitOfWork<TimetableDbContext> unitOfWork, IValidator<Discipline> validator)
+    {
+        _unitOfWork = unitOfWork;
+        _validator = validator;
+    }
 
     [HttpGet]
     public async Task<ActionResult<IPagedList<ListDisciplinesResponse>>>

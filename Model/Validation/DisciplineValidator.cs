@@ -59,9 +59,9 @@ public class DisciplineValidator : IValidator<Discipline>
 
     public async Task ValidateWorkHours(Discipline discipline, IList<IValidationError> errors)
     {
-        if (discipline.ClassroomWorkHours < 0)
+        if (discipline.ClassroomWorkHours <= 0)
             errors.Add(_describer.InvalidClassroomWorkHours(discipline.ClassroomWorkHours));
-        if (discipline.IndependentWorkHours < 0)
+        if (discipline.IndependentWorkHours <= 0)
             errors.Add(_describer.InvalidIndependentWorkHours(discipline.IndependentWorkHours));
 
         var totalLoadHours =

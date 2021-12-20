@@ -126,7 +126,7 @@ public class LoadsController : ControllerBase
         return Ok();
     }
     
-    [HttpGet]
+    [HttpGet("{loadId}/entries")]
     public async Task<ActionResult<IPagedList<ListEntriesResponse>>> GetTimetableEntries([FromRoute] long loadId,
         [FromQuery] FopRequest<TimetableEntry, EntryFilter> request)
     {

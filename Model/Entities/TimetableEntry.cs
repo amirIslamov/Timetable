@@ -14,6 +14,8 @@ public class TimetableEntry
 
     public long TeacherLoadId { get; set; }
     public TeacherLoad TeacherLoad { get; set; }
+
+    public long GroupId { get; set; }
 }
 
 public enum WeekType

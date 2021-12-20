@@ -109,12 +109,12 @@ public class TimetableDbContext : DbContext
         });
         mb.Entity<TeacherLoad>(e =>
         {
-            e.HasOne<Discipline>()
+            e.HasOne(e => e.Discipline)
                 .WithMany()
                 .HasForeignKey(l => l.DisciplineId)
                 .IsRequired();
 
-            e.HasMany<TimetableEntry>(l => l.TimetableEntries)
+            e.HasMany(l => l.TimetableEntries)
                 .WithOne(e => e.TeacherLoad)
                 .HasForeignKey(l => l.TeacherLoadId)
                 .IsRequired();
