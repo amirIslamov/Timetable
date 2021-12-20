@@ -18,8 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(o =>
 {
-    o.ModelBinderProviders.Add(new FilterBinderProvider());
-    o.ModelBinderProviders.Add(new PagingBinderProvider());
+    o.ModelBinderProviders.Insert(0, new FopRequestBinderProvider());
 });
 
 builder.Services.AddDbContext<TimetableDbContext>(o =>

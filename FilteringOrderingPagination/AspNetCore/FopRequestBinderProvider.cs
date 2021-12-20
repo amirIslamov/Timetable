@@ -1,20 +1,21 @@
-﻿using System;
-using FilteringOrderingPagination.Models;
+﻿using FilteringOrderingPagination.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 namespace FilteringOrderingPagination.AspNetCore;
 
-public class FilterBinderProvider : IModelBinderProvider
+public class FopRequestBinderProvider: IModelBinderProvider
 {
     public IModelBinder GetBinder(ModelBinderProviderContext context)
     {
-        if (HasGenericTypeBase(context.Metadata.ModelType, typeof(IFilter<>)))
-            return new BinderTypeModelBinder(typeof(FilterBinder));
+        if (HasGenericTypeBase(context.Metadata.ModelType, typeof(FopRequest<,>)))
+        {
+            return new BinderTypeModelBinder(typeof(FopRequestBinder));
+        }
 
         return null;
     }
-
+    
     private bool HasGenericTypeBase(Type type, Type genericType)
     {
         while (type != typeof(object))

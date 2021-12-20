@@ -21,7 +21,7 @@ public class DisciplineController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IPagedList<ListDisciplinesResponse>>>
-        GetDisciplines(FopRequest<Discipline, DisciplineFilter> request)
+        GetDisciplines([FromQuery] FopRequest<Discipline, DisciplineFilter> request)
     {
         var pagedDisciplines = await _unitOfWork
             .GetRepository<Discipline>()
@@ -33,7 +33,7 @@ public class DisciplineController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetDisciplineResponse>> GetDiscipline(long id)
+    public async Task<ActionResult<GetDisciplineResponse>> GetDiscipline([FromRoute] long id)
     {
         var discipline = await _unitOfWork
             .GetRepository<Discipline>()
@@ -45,7 +45,7 @@ public class DisciplineController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateDiscipline(CreateDisciplineRequest request)
+    public async Task<IActionResult> CreateDiscipline([FromBody] CreateDisciplineRequest request)
     {
         var discipline = new Discipline
         {
@@ -77,7 +77,7 @@ public class DisciplineController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateDiscipline(long id, UpdateDisciplineRequest request)
+    public async Task<IActionResult> UpdateDiscipline([FromRoute] long id, [FromBody] UpdateDisciplineRequest request)
     {
         var discipline = await _unitOfWork
             .GetRepository<Discipline>()
@@ -106,7 +106,7 @@ public class DisciplineController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteDiscipline(long id)
+    public async Task<IActionResult> DeleteDiscipline([FromRoute] long id)
     {
         var discipline = await _unitOfWork
             .GetRepository<Discipline>()
@@ -122,7 +122,8 @@ public class DisciplineController : ControllerBase
     }
     
     [HttpGet("{disciplineId}/loads")]
-    public async Task<ActionResult<IPagedList<ListLoadsResponse>>> GetLoads(long disciplineId, FopRequest<TeacherLoad, LoadFilter> request)
+    public async Task<ActionResult<IPagedList<ListLoadsResponse>>> GetLoads([FromRoute] long disciplineId,
+        [FromQuery] FopRequest<TeacherLoad, LoadFilter> request)
     {
         var pagedLoads = await _unitOfWork
             .GetRepository<TeacherLoad>()

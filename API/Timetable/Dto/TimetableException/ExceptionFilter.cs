@@ -5,9 +5,9 @@ namespace API.Timetable.Dto.TimetableException;
 
 public class ExceptionFilter : IFilter<Model.Entities.TimetableException>
 {
-    public DatePattern Date { get; set; }
-    public ValuePropertyPattern<long> TeacherId { get; set; }
-    public ValuePropertyPattern<long> GroupId { get; set; }
+    public DatePattern Date { get; set; } = new DatePattern();
+    public ValuePropertyPattern<long> TeacherId { get; set; } = new ValuePropertyPattern<long>();
+    public ValuePropertyPattern<long> GroupId { get; set; } = new ValuePropertyPattern<long>();
 
     public Specification<Model.Entities.TimetableException> ToSpecification()
     {

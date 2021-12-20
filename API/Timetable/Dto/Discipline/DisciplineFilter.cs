@@ -6,7 +6,10 @@ namespace API.Timetable.Dto.Discipline;
 public class DisciplineFilter : IFilter<Model.Entities.Discipline>
 {
     public ValuePropertyPattern<long> SubjectId { get; set; }
+        = new ValuePropertyPattern<long>();
+
     public EnumPattern<Model.Entities.Discipline.SemesterControlType> ControlType { get; set; }
+        = new EnumPattern<Model.Entities.Discipline.SemesterControlType>();
 
 
     public Specification<Model.Entities.Discipline> ToSpecification()

@@ -18,9 +18,11 @@ public static class ExpressionsExtensions
         this Expression<Func<TIn, bool>> left,
         Expression<Func<TIn, bool>> right)
     {
+        var substitutedRight = right.SubstituteParameter(left);
+        
         var andExpression = Expression.AndAlso(
             left.Body,
-            right.Body);
+            substitutedRight.Body);
 
         return Expression.Lambda<Func<TIn, bool>>(andExpression, left.Parameters.Single());
     }
@@ -29,9 +31,11 @@ public static class ExpressionsExtensions
         this Expression<Func<TIn, bool>> left,
         Expression<Func<TIn, bool>> right)
     {
+        var substitutedRight = right.SubstituteParameter(left);
+        
         var orExpression = Expression.OrElse(
             left.Body,
-            right.Body);
+            substitutedRight.Body);
 
         return Expression.Lambda<Func<TIn, bool>>(orExpression, left.Parameters.Single());
     }
@@ -42,5 +46,15 @@ public static class ExpressionsExtensions
         var notExpression = Expression.Not(argument.Body);
 
         return Expression.Lambda<Func<TIn, bool>>(notExpression, argument.Parameters.Single());
+    }
+
+    private static Expression<Func<TIn, TOut>> SubstituteParameter<TIn, TOut>(
+        this Expression<Func<TIn, TOut>> toSubstitute,
+        Expression<Func<TIn, TOut>> substituteWith)
+    {
+        var visitor = new SwapVisitor(
+            toSubstitute.Parameters.Single(), 
+            substituteWith.Parameters.Single());
+        return Expression.Lambda<Func<TIn, TOut>>(visitor.Visit(toSubstitute.Body), substituteWith.Parameters);
     }
 }
