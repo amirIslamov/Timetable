@@ -9,6 +9,7 @@ public class Student
     public long GroupId { get; set; }
     public Group Group { get; set; }
 
+    public long UserId { get; set; }
     public TimetableUser User { get; set; }
 }
 

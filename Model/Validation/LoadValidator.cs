@@ -22,7 +22,7 @@ public class LoadValidator : IValidator<TeacherLoad>
     {
         _discipline = await _repositoryFactory
             .GetRepository<Discipline>()
-            .FindAsync(new {Id = entity.DisciplineId});
+            .FindAsync(entity.DisciplineId);
 
         var errors = new List<IValidationError>();
 
@@ -47,7 +47,7 @@ public class LoadValidator : IValidator<TeacherLoad>
     {
         var groupCurator = await _repositoryFactory
             .GetRepository<Teacher>()
-            .FindAsync(new {Id = teacherLoad.DisciplineId});
+            .FindAsync(teacherLoad.DisciplineId);
 
         if (groupCurator == null) errors.Add(_describer.InvalidTeacherId(teacherLoad.DisciplineId));
     }

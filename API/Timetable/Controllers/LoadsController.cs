@@ -40,7 +40,7 @@ public class LoadsController : ControllerBase
     {
         var load = await _unitOfWork
             .GetRepository<TeacherLoad>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (load == null) return NotFound();
 
@@ -82,7 +82,7 @@ public class LoadsController : ControllerBase
     {
         var load = await _unitOfWork
             .GetRepository<TeacherLoad>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (load == null) return NotFound();
 
@@ -111,7 +111,7 @@ public class LoadsController : ControllerBase
     {
         var load = await _unitOfWork
             .GetRepository<TeacherLoad>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (load == null) return NotFound();
 

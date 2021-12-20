@@ -57,10 +57,10 @@ public class StudentsController : ControllerBase
     {
         var student = new Student
         {
-            Id = request.UserId,
             GroupId = request.GroupId,
             FatherContacts = request.FatherContacts,
-            MotherContacts = request.MotherContacts
+            MotherContacts = request.MotherContacts,
+            UserId = request.UserId,
         };
 
         var validationResult = await _validator.ValidateAsync(student);
@@ -73,7 +73,7 @@ public class StudentsController : ControllerBase
 
             var user = await _unitOfWork
                 .GetRepository<TimetableUser>()
-                .FindAsync(new {student.Id});
+                .FindAsync(student.UserId);
 
             user.RoleSet.AddRole(Role.Student);
 
@@ -97,8 +97,12 @@ public class StudentsController : ControllerBase
         var student = await _unitOfWork
             .GetRepository<Student>()
             .GetFirstOrDefaultAsync(
-                include: q => q.Include(s => s.User),
                 predicate: s => s.Id == id);
+
+        if (student == null)
+        {
+            return NotFound();
+        }
 
         student.FatherContacts = request.FatherContacts;
         student.MotherContacts = request.MotherContacts;

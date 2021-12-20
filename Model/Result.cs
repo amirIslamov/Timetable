@@ -18,7 +18,7 @@ public class Result<TSuccess, TFailure>
         _succeeded = false;
     }
 
-    public bool Succeeded { get; set; }
+    public bool Succeeded => _succeeded;
     public TFailure Failure => !_succeeded ? _failure : throw new NotSupportedException();
     public TSuccess Success => _succeeded ? _success : throw new NotSupportedException();
 
@@ -49,7 +49,7 @@ public class Result<TFailure>
         _succeeded = false;
     }
 
-    public bool Succeeded { get; set; }
+    public bool Succeeded => _succeeded;
     public TFailure Failure => !_succeeded ? _failure : throw new NotSupportedException();
 
     public static Result<TFailure> Failed(TFailure failure)

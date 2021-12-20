@@ -28,6 +28,9 @@ builder.Services.AddDbContext<TimetableDbContext>(o =>
     })
     .AddUnitOfWork<TimetableDbContext>();
 
+builder.Services.AddSingleton<TimetableErrorDescriber>();
+builder.Services.AddSingleton<AuthErrorDescriber>();
+
 builder.Services.AddScoped<IValidator<Discipline>, DisciplineValidator>();
 builder.Services.AddScoped<IValidator<Group>, GroupValidator>();
 builder.Services.AddScoped<IValidator<TeacherLoad>, LoadValidator>();
@@ -64,8 +67,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtOptions.SigningKey)
-            )
+                Encoding.UTF8.GetBytes(jwtOptions.SigningKey))
         };
     });
 

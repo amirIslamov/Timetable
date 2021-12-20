@@ -15,9 +15,9 @@ namespace API.Timetable.Controllers;
 public class GroupsController : ControllerBase
 {
     private readonly IValidator<Group> _groupValidator;
-    private readonly UnitOfWork<TimetableDbContext> _unitOfWork;
+    private readonly IUnitOfWork<TimetableDbContext> _unitOfWork;
 
-    public GroupsController(UnitOfWork<TimetableDbContext> unitOfWork, IValidator<Group> groupValidator)
+    public GroupsController(IUnitOfWork<TimetableDbContext> unitOfWork, IValidator<Group> groupValidator)
     {
         _unitOfWork = unitOfWork;
         _groupValidator = groupValidator;
@@ -40,7 +40,7 @@ public class GroupsController : ControllerBase
     {
         var group = await _unitOfWork
             .GetRepository<Group>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (group == null) return NotFound();
 
@@ -54,7 +54,8 @@ public class GroupsController : ControllerBase
         {
             Name = request.Name,
             ShortName = request.ShortName,
-            AdmissionYear = request.AdmissionYear
+            AdmissionYear = request.AdmissionYear,
+            CuratorId = request.CuratorId
         };
 
         var validationResult = await _groupValidator.ValidateAsync(group);
@@ -81,13 +82,14 @@ public class GroupsController : ControllerBase
     {
         var group = await _unitOfWork
             .GetRepository<Group>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (group == null) return NotFound();
 
         group.Name = request.Name;
         group.ShortName = request.ShortName;
         group.AdmissionYear = request.AdmissionYear;
+        group.CuratorId = request.CuratorId;
 
         var validationResult = await _groupValidator.ValidateAsync(group);
 

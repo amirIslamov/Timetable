@@ -1,8 +1,10 @@
+using System.Threading.Tasks;
 using API.Timetable.Dto.User;
 using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using FilteringOrderingPagination;
 using FilteringOrderingPagination.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model.Auth;
 using Model.Dal;

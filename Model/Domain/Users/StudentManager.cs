@@ -48,13 +48,6 @@ public class StudentManager
     {
         return await _repositoryFactory
             .GetRepository<Student>()
-            .FindAsync(new {Id = id});
-    }
-
-    private async Task<Student> FindAsync(object id)
-    {
-        return await _repositoryFactory
-            .GetRepository<Student>()
             .FindAsync(id);
     }
 

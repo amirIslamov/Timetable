@@ -8,14 +8,14 @@ public class AuthErrorDescriber
     {
         return new(
             nameof(DuplicateEmail),
-            $"Subject with code {entityCode} is already exists");
+            $"User with email {entityCode} is already exists");
     }
 
     public ValidationError UserEmailNull()
     {
         return new(
             nameof(UserEmailNull),
-            "Subject name must be provided");
+            "User email must be provided");
     }
 
     public IValidationError IncorrectPasswordLength(int optionsMinSize, int optionsMaxSize)

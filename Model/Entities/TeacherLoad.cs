@@ -18,4 +18,6 @@ public class TeacherLoad
 
     public long TeacherId { get; set; }
     public Teacher Teacher { get; set; }
+    
+    public List<TimetableEntry> TimetableEntries { get; set; }
 }

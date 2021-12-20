@@ -35,7 +35,7 @@ public class TimeTableExceptionController : ControllerBase
     {
         var exception = await _unitOfWork
             .GetRepository<TimetableException>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (exception == null) return NotFound();
 
@@ -80,7 +80,7 @@ public class TimeTableExceptionController : ControllerBase
     {
         var exception = await _unitOfWork
             .GetRepository<TimetableException>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (exception == null) return NotFound();
 
@@ -113,7 +113,7 @@ public class TimeTableExceptionController : ControllerBase
     {
         var exception = await _unitOfWork
             .GetRepository<TimetableException>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (exception == null) return NotFound();
 

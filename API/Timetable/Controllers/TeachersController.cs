@@ -57,7 +57,7 @@ public class TeachersController : ControllerBase
     {
         var teacher = new Teacher
         {
-            Id = request.UserId,
+            UserId =  request.UserId,
             Chair = request.Chair
         };
 
@@ -71,7 +71,7 @@ public class TeachersController : ControllerBase
 
             var user = await _unitOfWork
                 .GetRepository<TimetableUser>()
-                .FindAsync(new {teacher.Id});
+                .FindAsync(teacher.UserId);
 
             user.RoleSet.AddRole(Role.Teacher);
 
@@ -95,7 +95,6 @@ public class TeachersController : ControllerBase
         var teacher = await _unitOfWork
             .GetRepository<Teacher>()
             .GetFirstOrDefaultAsync(
-                include: q => q.Include(s => s.User),
                 predicate: s => s.Id == id);
 
         teacher.Chair = request.Chair;

@@ -8,12 +8,12 @@ namespace Model.Validation;
 
 public class StudentValidator : IValidator<Student>
 {
-    private IUnitOfWork<TimetableDbContext> _unitOfWork;
+    private IRepositoryFactory _repositoryFactory;
     private TimetableErrorDescriber _describer;
 
-    public StudentValidator(IUnitOfWork<TimetableDbContext> unitOfWork, TimetableErrorDescriber describer)
+    public StudentValidator(IRepositoryFactory repositoryFactory, TimetableErrorDescriber describer)
     {
-        _unitOfWork = unitOfWork;
+        _repositoryFactory = repositoryFactory;
         _describer = describer;
     }
 
@@ -34,25 +34,30 @@ public class StudentValidator : IValidator<Student>
 
     public async Task ValidateUser(Student student, IList<IValidationError> errors)
     {
-        var user = await _unitOfWork
+        var user = await _repositoryFactory
             .GetRepository<TimetableUser>()
-            .FindAsync(new {Id = student.Id});
+            .FindAsync(student.UserId);
 
         if (user == null)
         {
-            errors.Add(_describer.InvalidUserId(student.Id));
+            errors.Add(_describer.InvalidUserId(student.UserId));
             return;
         }
         
-        if (user.RoleSet.ContainsRole(Role.Student))
-            errors.Add(_describer.DuplicateStudent(student.Id));
+        var sameStudent = await _repositoryFactory
+            .GetRepository<Teacher>()
+            .GetFirstOrDefaultAsync(
+                predicate: s => s.Id != student.Id && s.UserId == student.UserId);
+        
+        if (sameStudent != null)
+            errors.Add(_describer.DuplicateStudent(student.UserId));
     }
     
     public async Task ValidateGroup(Student student, IList<IValidationError> errors)
     {
-        var group = await _unitOfWork
+        var group = await _repositoryFactory
             .GetRepository<Group>()
-            .FindAsync(new {Id = student.GroupId});
+            .FindAsync(student.GroupId);
         
         if (group == null) 
             errors.Add(_describer.InvalidGroupId(student.GroupId));

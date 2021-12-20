@@ -9,15 +9,12 @@ public class TimetableUserManager
 {
     private readonly PasswordManager _passwordManager;
     private readonly IRepositoryFactory _repositoryFactory;
-    private readonly ICollectionValidator<TimetableUser, long> _userCollectionValidator;
     private readonly IValidator<TimetableUser> _userValidator;
 
-    public TimetableUserManager(IRepositoryFactory repositoryFactory, IValidator<TimetableUser> userValidator,
-        ICollectionValidator<TimetableUser, long> userCollectionValidator, PasswordManager passwordManager)
+    public TimetableUserManager(IRepositoryFactory repositoryFactory, IValidator<TimetableUser> userValidator, PasswordManager passwordManager)
     {
         _repositoryFactory = repositoryFactory;
         _userValidator = userValidator;
-        _userCollectionValidator = userCollectionValidator;
         _passwordManager = passwordManager;
     }
 
@@ -48,24 +45,11 @@ public class TimetableUserManager
         return result;
     }
 
-    public async Task<Result<ICollectionValidationResult<long>>> CreateRangeAsync(IEnumerable<TimetableUser> users)
-    {
-        var validationResult = _userCollectionValidator.ValidateRangeAsync(users);
-
-        if (validationResult.Succeeded)
-        {
-            await _repositoryFactory.GetRepository<TimetableUser>().InsertAsync(users);
-            return Result<ICollectionValidationResult<long>>.Create();
-        }
-
-        return validationResult;
-    }
-
     public async Task<TimetableUser> FindAsync(long id)
     {
         return await _repositoryFactory
             .GetRepository<TimetableUser>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
     }
 
     public async Task<TimetableUser> FindAsync(object id)

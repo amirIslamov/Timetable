@@ -37,7 +37,7 @@ public class DisciplineValidator : IValidator<Discipline>
     {
         var groupCurator = await _repositoryFactory
             .GetRepository<Subject>()
-            .FindAsync(new {Id = discipline.SubjectId});
+            .FindAsync(discipline.SubjectId);
 
         if (groupCurator == null) errors.Add(_describer.InvalidSubjectId(discipline.SubjectId));
     }
@@ -46,7 +46,7 @@ public class DisciplineValidator : IValidator<Discipline>
     {
         var groupCurator = await _repositoryFactory
             .GetRepository<Group>()
-            .FindAsync(new {Id = discipline.GroupId});
+            .FindAsync(discipline.GroupId);
 
         if (groupCurator == null) errors.Add(_describer.InvalidGroupId(discipline.SubjectId));
     }

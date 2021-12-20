@@ -63,7 +63,7 @@ public class GroupValidator : IValidator<Group>
     {
         var groupCurator = await _repositoryFactory
             .GetRepository<Teacher>()
-            .FindAsync(new {Id = group.CuratorId});
+            .FindAsync(group.CuratorId);
 
         if (groupCurator == null) errors.Add(_describer.InvalidCuratorId(@group.CuratorId));
     }

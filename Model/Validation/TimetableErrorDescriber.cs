@@ -156,6 +156,13 @@ public class TimetableErrorDescriber
     {
         return new ValidationError(
             nameof(DuplicateStudent),
-            $"Invalid user id {studentId}: such student already exists");    
+            $"User with id {studentId} is already a student");    
+    }
+
+    public IValidationError DuplicateTeacher(long teacherUserId)
+    {
+        return new ValidationError(
+            nameof(DuplicateTeacher),
+            $"User with id {teacherUserId} is already a teacher"); 
     }
 }

@@ -55,7 +55,7 @@ public class TimetableEntryValidator : IValidator<TimetableEntry>
     {
         var teacherLoad = await _repositoryFactory
             .GetRepository<TeacherLoad>()
-            .FindAsync(new {Id = entry.TeacherLoadId});
+            .FindAsync(entry.TeacherLoadId);
 
         if (teacherLoad == null) errors.Add(_describer.InvalidTeacherLoadId(entry.TeacherLoadId));
     }

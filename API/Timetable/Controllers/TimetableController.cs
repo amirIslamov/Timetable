@@ -41,7 +41,7 @@ public class TimetableController : ControllerBase
     {
         var entry = await _unitOfWork
             .GetRepository<TimetableEntry>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (entry == null) return NotFound();
 
@@ -85,7 +85,7 @@ public class TimetableController : ControllerBase
     {
         var entry = await _unitOfWork
             .GetRepository<TimetableEntry>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (entry == null) return NotFound();
 
@@ -122,7 +122,7 @@ public class TimetableController : ControllerBase
     {
         var entry = await _unitOfWork
             .GetRepository<TimetableEntry>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (entry == null) return NotFound();
 

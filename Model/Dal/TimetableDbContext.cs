@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Model.Entities;
 
 namespace Model.Dal;
@@ -19,6 +20,15 @@ public class TimetableDbContext : DbContext
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Discipline> Disciplines { get; set; }
     public DbSet<TeacherLoad> ClassGroups { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.ConfigureWarnings(b =>
+        {
+            b.Log(RelationalEventId.AmbientTransactionWarning);
+        });
+        base.OnConfiguring(optionsBuilder);
+    }
 
     protected override void OnModelCreating(ModelBuilder mb)
     {
@@ -42,7 +52,7 @@ public class TimetableDbContext : DbContext
         {
             e.HasOne(s => s.User)
                 .WithOne()
-                .HasForeignKey<Student>(s => s.Id)
+                .HasForeignKey<Student>(s => s.UserId)
                 .IsRequired();
 
             e.HasOne(s => s.Group)
@@ -62,7 +72,7 @@ public class TimetableDbContext : DbContext
         {
             e.HasOne(s => s.User)
                 .WithOne()
-                .HasForeignKey<Teacher>(s => s.Id)
+                .HasForeignKey<Teacher>(s => s.UserId)
                 .IsRequired();
 
             e.HasMany(t => t.TeacherLoads)
@@ -77,19 +87,40 @@ public class TimetableDbContext : DbContext
 
             e.HasMany(group => group.Disciplines)
                 .WithOne(d => d.Group)
+                .HasForeignKey(d => d.GroupId)
+                .IsRequired();
+
+            e.HasOne<Teacher>(group => group.Curator)
+                .WithMany()
+                .HasForeignKey(g => g.CuratorId)
                 .IsRequired();
         });
-        mb.Entity<Subject>(e => { });
+        mb.Entity<Subject>(e =>
+        {
+            
+        });
         mb.Entity<Discipline>(e =>
         {
             e.HasOne(d => d.Subject)
                 .WithMany()
+                .HasForeignKey(d => d.SubjectId)
                 .IsRequired();
+            
         });
         mb.Entity<TeacherLoad>(e =>
         {
             e.HasOne<Discipline>()
-                .WithMany();
+                .WithMany()
+                .HasForeignKey(l => l.DisciplineId)
+                .IsRequired();
+
+            e.HasMany<TimetableEntry>(l => l.TimetableEntries)
+                .WithOne(e => e.TeacherLoad)
+                .HasForeignKey(l => l.TeacherLoadId)
+                .IsRequired();
+        });
+        mb.Entity<TimetableEntry>(e =>
+        {
         });
     }
 }

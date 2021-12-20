@@ -35,15 +35,20 @@ public class TeacherValidator : IValidator<Teacher>
     {
         var user = await _repositoryFactory
             .GetRepository<TimetableUser>()
-            .FindAsync(new {Id = teacher.Id});
+            .FindAsync(teacher.UserId);
 
         if (user == null)
         {
-            errors.Add(_describer.InvalidUserId(teacher.Id));
+            errors.Add(_describer.InvalidUserId(teacher.UserId));
             return;
         }
+
+        var sameTeacher = await _repositoryFactory
+            .GetRepository<Teacher>()
+            .GetFirstOrDefaultAsync(
+                predicate: t => t.Id != teacher.Id && t.UserId == teacher.UserId);
         
-        if (user.RoleSet.ContainsRole(Role.Teacher))
-            errors.Add(_describer.DuplicateStudent(teacher.Id));
+        if (sameTeacher != null)
+            errors.Add(_describer.DuplicateTeacher(teacher.UserId));
     }
 }

@@ -35,7 +35,7 @@ public class DisciplineController : ControllerBase
     {
         var discipline = await _unitOfWork
             .GetRepository<Discipline>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (discipline == null) return NotFound();
 
@@ -79,7 +79,7 @@ public class DisciplineController : ControllerBase
     {
         var discipline = await _unitOfWork
             .GetRepository<Discipline>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         discipline.ControlType = request.ControlType;
         discipline.SubjectId = request.SubjectId;
@@ -108,7 +108,7 @@ public class DisciplineController : ControllerBase
     {
         var discipline = await _unitOfWork
             .GetRepository<Discipline>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (discipline == null) return NotFound();
 

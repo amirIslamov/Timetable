@@ -41,7 +41,7 @@ public class SubjectsController : ControllerBase
     {
         var subject = await _unitOfWork
             .GetRepository<Subject>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (subject == null) return NotFound();
 
@@ -81,7 +81,7 @@ public class SubjectsController : ControllerBase
     {
         var subject = await _unitOfWork
             .GetRepository<Subject>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (subject == null) return NotFound();
 
@@ -109,7 +109,7 @@ public class SubjectsController : ControllerBase
     {
         var subject = await _unitOfWork
             .GetRepository<Subject>()
-            .FindAsync(new {Id = id});
+            .FindAsync(id);
 
         if (subject == null) return NotFound();
 
