@@ -20,6 +20,7 @@ public class UserValidator : IValidator<TimetableUser>
         var errors = new List<IValidationError>();
 
         await ValidateEmail(entity, errors);
+        await ValidateRequestedRoles(entity, errors);
 
         if (errors.Count == 0) return Result<IValidationResult>.Create();
 
