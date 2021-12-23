@@ -44,4 +44,13 @@ public class UserValidator : IValidator<TimetableUser>
 
         if (subjectWithSameCode != null) errors.Add(_describer.DuplicateEmail(user.Email));
     }
+
+    public async Task ValidateRequestedRoles(TimetableUser user, IList<IValidationError> errors)
+    {
+        if (user.RequestedRoles.Roles.Count() == 0)
+        {
+            errors.Add(_describer.InvalidRequestedRoles());
+        }
+    }
 }
+

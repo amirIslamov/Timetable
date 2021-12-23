@@ -57,10 +57,11 @@ public class LoginController : ControllerBase
     public async Task<IActionResult> Register(RegisterRequest request)
     {
         var roleSet = new RoleSet();
-
-        foreach (var role in request.RequestedRoles)
-        {
-            roleSet.AddRole(role);
+        if (request.RequestedRoles != null){
+            foreach (var role in request.RequestedRoles)
+            {
+                roleSet.AddRole(role);
+            }
         }
         
         var result = await _userManager.CreateAsync(

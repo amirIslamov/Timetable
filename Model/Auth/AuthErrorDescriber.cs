@@ -46,4 +46,10 @@ public class AuthErrorDescriber
             nameof(PasswordDoesNotContainDigits),
             "Password should contain at least one digit");
     }
+
+    public IValidationError InvalidRequestedRoles()
+    {
+        return new ValidationError(
+            nameof(InvalidRequestedRoles),
+            "User should request at least one role");    }
 }
