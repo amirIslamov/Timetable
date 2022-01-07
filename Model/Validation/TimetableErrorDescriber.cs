@@ -165,4 +165,11 @@ public class TimetableErrorDescriber
             nameof(DuplicateTeacher),
             $"User with id {teacherUserId} is already a teacher"); 
     }
+
+    public IValidationError DuplicateClassroom(string entityPavilion, int entityClassroomNumber)
+    {
+        return new ValidationError(
+            nameof(DuplicateClassroom),
+            $"Classroom with number {entityClassroomNumber} is already exists in pavilion {entityPavilion}");
+    }
 }

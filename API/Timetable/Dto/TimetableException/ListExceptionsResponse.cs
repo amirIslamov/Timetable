@@ -6,7 +6,7 @@ public class ListExceptionsResponse
     {
         return new ListExceptionsResponse()
         {
-            Classroom = exception.Classroom,
+            ClassroomId = exception.ClassroomId,
             Date = exception.Date,
             Id = exception.Id,
             Link = exception.Link,
@@ -31,5 +31,5 @@ public class ListExceptionsResponse
 
     public DateTime Date { get; set; }
 
-    public string Classroom { get; set; }
+    public long ClassroomId { get; set; }
 }

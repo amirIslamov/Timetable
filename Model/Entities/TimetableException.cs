@@ -7,14 +7,17 @@ public class TimetableException
     public long TimetableEntryId { get; set; }
     public TimetableEntry TimetableEntry { get; set; }
 
+    public DateTime ActualDate { get; set; }
     public DateTime Date { get; set; }
     public int ClassNum { get; set; }
 
-    public string Classroom { get; set; }
     public string Link { get; set; }
     public DateTime UpdatedAt { get; set; }
     public long UpdatedBy { get; set; }
 
     public long TeacherId { get; set; }
     public Teacher Teacher { get; set; }
+    
+    public long ClassroomId { get; set; }
+    public Classroom Classroom { get; set; }
 }

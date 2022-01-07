@@ -19,7 +19,8 @@ public class TimetableDbContext : DbContext
 
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Discipline> Disciplines { get; set; }
-    public DbSet<TeacherLoad> ClassGroups { get; set; }
+    public DbSet<TeacherLoad> TeacherLoads { get; set; }
+    public DbSet<Classroom> Classrooms { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -128,6 +129,10 @@ public class TimetableDbContext : DbContext
         });
         mb.Entity<TimetableEntry>(e =>
         {
+            e.HasOne<Classroom>(e => e.Classroom)
+                .WithOne()
+                .HasForeignKey<TimetableEntry>(e => e.ClassroomId)
+                .IsRequired();
         });
     }
 }

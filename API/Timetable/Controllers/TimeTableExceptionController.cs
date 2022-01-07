@@ -47,7 +47,7 @@ public class TimeTableExceptionController : ControllerBase
     {
         var exception = new TimetableException
         {
-            Classroom = request.Classroom,
+            ClassroomId = request.ClassroomId,
             Date = request.Date,
             Link = request.Link,
             ClassNum = request.ClassNum,
@@ -84,7 +84,7 @@ public class TimeTableExceptionController : ControllerBase
 
         if (exception == null) return NotFound();
 
-        exception.Classroom = request.Classroom;
+        exception.ClassroomId = request.ClassroomId;
         exception.Link = request.Link;
         exception.ClassNum = request.ClassNum;
         exception.TimetableEntryId = request.TimetableEntryId;

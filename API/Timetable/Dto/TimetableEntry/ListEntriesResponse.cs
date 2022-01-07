@@ -10,7 +10,7 @@ public class ListEntriesResponse
         {
             Id = entry.Id,
             Link = entry.Link,
-            Classroom = entry.Classroom,
+            ClassroomId = entry.ClassroomId,
             ClassNum = entry.ClassNum,
             TeacherLoadId = entry.TeacherLoadId,
             WeekType = entry.WeekType,
@@ -26,7 +26,7 @@ public class ListEntriesResponse
 
     public int ClassNum { get; set; }
 
-    public string Classroom { get; set; }
+    public long ClassroomId { get; set; }
 
     public string Link { get; set; }
 

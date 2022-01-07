@@ -2,7 +2,7 @@
 
 public class CreateExceptionRequest
 {
-    public string Classroom { get; set; }
+    public long ClassroomId { get; set; }
     public DateTime Date { get; set; }
     public string Link { get; set; }
     public int ClassNum { get; set; }

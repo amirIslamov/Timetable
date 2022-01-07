@@ -55,7 +55,7 @@ public class TimetableEntryController : ControllerBase
     {
         var entry = new TimetableEntry
         {
-            Classroom = request.Classroom,
+            ClassroomId = request.ClassroomId,
             Link = request.Link,
             ClassNum = request.ClassNum,
             TeacherLoadId = request.TeacherLoadId,
@@ -91,7 +91,7 @@ public class TimetableEntryController : ControllerBase
 
         if (entry == null) return NotFound();
 
-        entry.Classroom = request.Classroom;
+        entry.ClassroomId = request.ClassroomId;
         entry.Link = request.Link;
         entry.ClassNum = request.ClassNum;
         entry.TeacherLoadId = request.TeacherLoadId;
