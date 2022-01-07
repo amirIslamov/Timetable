@@ -38,6 +38,8 @@ builder.Services.AddScoped<IValidator<Subject>, SubjectValidator>();
 builder.Services.AddScoped<IValidator<Teacher>, TeacherValidator>();
 builder.Services.AddScoped<IValidator<TimetableEntry>, TimetableEntryValidator>();
 builder.Services.AddScoped<IValidator<TimetableException>, TimetableExceptionValidator>();
+builder.Services.AddScoped<IValidator<Classroom>, ClassroomValidator>();
+
 builder.Services.AddScoped<TimetableUserManager>();
 builder.Services.AddScoped<PasswordManager>();
 builder.Services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
